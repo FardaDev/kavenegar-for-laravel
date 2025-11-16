@@ -1,17 +1,21 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "fardadev/kavenegar-for-laravel",
+    "description": "Modern Laravel 12+ package for Kavenegar SMS API integration with full type safety and comprehensive testing",
     "keywords": [
-        ":vendor_name",
+        "kavenegar",
         "laravel",
-        ":package_slug"
+        "sms",
+        "api",
+        "notification",
+        "verification",
+        "otp"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/FardaDev/kavenegar-for-laravel",
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "FardaDev",
+            "email": "dev@farda.dev",
             "role": "Developer"
         }
     ],
@@ -35,13 +39,12 @@
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src/",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories/"
+            "FardaDev\\Kavenegar\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests/",
+            "FardaDev\\Kavenegar\\Tests\\": "tests/",
             "Workbench\\App\\": "workbench/app/"
         }
     },
@@ -63,10 +66,10 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
+                "FardaDev\\Kavenegar\\KavenegarServiceProvider"
             ],
             "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
+                "Kavenegar": "FardaDev\\Kavenegar\\Facades\\Kavenegar"
             }
         }
     },
