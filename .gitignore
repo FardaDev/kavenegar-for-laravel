@@ -23,10 +23,16 @@ _ide_helper_models.php
 /.idea
 /.fleet
 /.vscode
+/.kiro
+/.cursor
 
 # Misc
 phpunit.xml
 phpstan.neon
 testbench.yaml
-/docs
 /coverage
+
+#original lib and my helpers
+/kavenegar-laravel
+/my-helpers
+
