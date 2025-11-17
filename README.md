@@ -7,7 +7,7 @@ Modern Laravel 11+ package for [Kavenegar](https://kavenegar.com) SMS API integr
 
 ## Features
 
-- ✅ **Laravel 11+ Compatible** - Built for modern Laravel with PHP 8.2+
+- ✅ **Laravel 11+ Compatible** - Built for modern Laravel with PHP 8.3+
 - ✅ **Full Type Safety** - Strongly typed with readonly DTOs and return types
 - ✅ **Auto-Discovery** - Automatic service provider and facade registration
 - ✅ **Comprehensive API Coverage** - All Kavenegar endpoints supported
@@ -19,7 +19,7 @@ Modern Laravel 11+ package for [Kavenegar](https://kavenegar.com) SMS API integr
 
 ## Requirements
 
-- PHP 8.2 or higher
+- PHP 8.3 or higher
 - Laravel 11.0 or 12.0
 - Kavenegar API Key ([Get one here](https://panel.kavenegar.com/client/setting/account))
 
