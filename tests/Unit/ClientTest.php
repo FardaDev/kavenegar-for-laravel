@@ -189,6 +189,7 @@ describe('Client Helper Methods', function () {
 
         Http::assertSent(function ($request) {
             $url = $request->url();
+
             // Check for either encoded or non-encoded comma
             return str_contains($url, '09123456789') && str_contains($url, '09987654321');
         });
