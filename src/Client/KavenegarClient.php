@@ -165,8 +165,6 @@ class KavenegarClient
             );
         }
     }
-}
-
 
     /**
      * Send SMS to one or more recipients.

@@ -1,37 +1,28 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace VendorName\Skeleton\Tests;
+namespace FardaDev\Kavenegar\Tests;
 
-use Illuminate\Database\Eloquent\Factories\Factory;
+use FardaDev\Kavenegar\KavenegarServiceProvider;
 use Orchestra\Testbench\TestCase as Orchestra;
-use VendorName\Skeleton\SkeletonServiceProvider;
 
 class TestCase extends Orchestra
 {
     protected function setUp(): void
     {
         parent::setUp();
-
-        Factory::guessFactoryNamesUsing(
-            fn (string $modelName) => 'VendorName\\Skeleton\\Database\\Factories\\'.class_basename($modelName).'Factory'
-        );
     }
 
-    protected function getPackageProviders($app)
+    protected function getPackageProviders($app): array
     {
         return [
-            SkeletonServiceProvider::class,
+            KavenegarServiceProvider::class,
         ];
     }
 
-    public function getEnvironmentSetUp($app)
+    public function getEnvironmentSetUp($app): void
     {
-        config()->set('database.default', 'testing');
-
-        /*
-         foreach (\Illuminate\Support\Facades\File::allFiles(__DIR__ . '/../database/migrations') as $migration) {
-            (include $migration->getRealPath())->up();
-         }
-         */
+        config()->set('kavenegar.api_key', 'test-api-key');
+        config()->set('kavenegar.sender', '10004346');
+        config()->set('kavenegar.skip_in_development', false);
     }
 }
