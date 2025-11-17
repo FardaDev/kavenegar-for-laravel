@@ -190,8 +190,9 @@ describe('Helper Send Methods', function () {
         expect($result)->toBeObject();
 
         Http::assertSent(function ($request) {
-            return str_contains($request->url(), 'email-pass')
-                && str_contains($request->url(), 'user@example.com');
+            $url = $request->url();
+            return str_contains($url, 'email-pass')
+                && (str_contains($url, 'user@example.com') || str_contains($url, 'user%40example.com'));
         });
     });
 

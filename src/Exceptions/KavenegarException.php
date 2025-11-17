@@ -9,6 +9,9 @@ use Throwable;
 
 abstract class KavenegarException extends Exception
 {
+    /**
+     * @param  array<string, mixed>|null  $context
+     */
     public function __construct(
         string $message,
         public readonly int $errorCode,
@@ -18,6 +21,9 @@ abstract class KavenegarException extends Exception
         parent::__construct($message, $errorCode, $previous);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getContext(): ?array
     {
         return $this->context;

@@ -139,7 +139,7 @@ describe('Send SMS', function () {
         expect(fn () => Kavenegar::send('09123456789', 'Test'))
             ->toThrow(KavenegarApiException::class)
             ->and(fn () => Kavenegar::send('09123456789', 'Test'))
-            ->toThrow(fn ($e) => $e->errorCode === 418);
+            ->toThrow(fn (KavenegarApiException $e) => $e->errorCode === 418);
     });
 });
 
@@ -320,7 +320,7 @@ describe('Verify Lookup', function () {
         Http::assertSent(function ($request) {
             $url = $request->url();
 
-            return str_contains($url, 'token2=user@example.com')
+            return (str_contains($url, 'token2=user@example.com') || str_contains($url, 'token2=user%40example.com'))
                 && str_contains($url, 'token3=extra-data');
         });
     });
@@ -382,7 +382,7 @@ describe('Error Handling', function () {
         expect(fn () => Kavenegar::send('09123456789', 'Test'))
             ->toThrow(KavenegarApiException::class)
             ->and(fn () => Kavenegar::send('09123456789', 'Test'))
-            ->toThrow(fn ($e) => $e->errorCode === 401);
+            ->toThrow(fn (KavenegarApiException $e) => $e->errorCode === 401);
     });
 
     it('throws HTTP exception for connection timeout', function () {
@@ -411,13 +411,13 @@ describe('Error Handling', function () {
             ]),
         ]);
 
-        try {
-            Kavenegar::send('09123456789', 'Test');
-            expect(false)->toBeTrue(); // Should not reach here
-        } catch (KavenegarApiException $e) {
-            expect($e->getContext())->toBeArray()
-                ->and($e->errorCode)->toBe(418);
-        }
+        expect(fn () => Kavenegar::send('09123456789', 'Test'))
+            ->toThrow(function (KavenegarApiException $e) {
+                expect($e->getContext())->toBeArray()
+                    ->and($e->errorCode)->toBe(418);
+
+                return true;
+            });
     });
 });
 

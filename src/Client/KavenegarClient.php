@@ -19,10 +19,6 @@ class KavenegarClient
 {
     private const BASE_URL = 'https://api.kavenegar.com/v1';
 
-    private const MAX_SEND_BATCH = 200;
-
-    private const MAX_STATUS_BATCH = 500;
-
     public function __construct(
         private readonly string $apiKey,
         private readonly ?string $defaultSender = null,
@@ -39,6 +35,9 @@ class KavenegarClient
 
     /**
      * Execute HTTP request to Kavenegar API.
+     *
+     * @param  array<string, mixed>  $params
+     * @return array<int, array<string, mixed>>
      *
      * @throws KavenegarHttpException
      * @throws KavenegarApiException
@@ -66,6 +65,8 @@ class KavenegarClient
 
     /**
      * Handle API response and check for errors.
+     *
+     * @return array<int, array<string, mixed>>
      *
      * @throws KavenegarApiException
      */
@@ -106,6 +107,8 @@ class KavenegarClient
     /**
      * Validate that all arrays have the same length.
      *
+     * @param  array<int, mixed>  ...$arrays
+     *
      * @throws KavenegarValidationException
      */
     private function validateArrayLengths(array ...$arrays): void
@@ -123,15 +126,9 @@ class KavenegarClient
     }
 
     /**
-     * Normalize phone number format.
-     */
-    private function normalizePhoneNumber(string $number): string
-    {
-        return trim($number);
-    }
-
-    /**
      * Convert array or string to comma-separated string.
+     *
+     * @param  string|array<int, string|int>  $value
      */
     private function toCommaSeparated(string|array $value): string
     {
@@ -173,16 +170,16 @@ class KavenegarClient
     /**
      * Send SMS to one or more recipients.
      *
-     * @param  string|array  $receptor  Phone number(s) of recipient(s)
+     * @param  string|array<int, string>  $receptor  Phone number(s) of recipient(s)
      * @param  string  $message  Message text (max 900 characters)
      * @param  string|null  $sender  Sender line number (uses default if null)
      * @param  int|null  $date  Scheduled send time (UnixTime)
      * @param  int|null  $type  Message display type (0-3, see docs)
-     * @param  array|null  $localid  Local IDs for duplicate prevention
+     * @param  array<int, int>|null  $localid  Local IDs for duplicate prevention
      * @param  int|null  $hide  Hide receptor in logs (1 to hide)
      * @param  string|null  $tag  Tag for categorization
      * @param  string|null  $policy  Custom sending flow policy
-     * @return MessageResponse[]
+     * @return array<int, MessageResponse>
      *
      * @throws KavenegarValidationException
      * @throws KavenegarApiException
@@ -249,12 +246,12 @@ class KavenegarClient
      * Send multiple different messages to different recipients from different senders.
      * All arrays must have the same length. Uses POST method.
      *
-     * @param  array  $senders  Array of sender line numbers
-     * @param  array  $receptors  Array of recipient phone numbers
-     * @param  array  $messages  Array of message texts
+     * @param  array<int, string>  $senders  Array of sender line numbers
+     * @param  array<int, string>  $receptors  Array of recipient phone numbers
+     * @param  array<int, string>  $messages  Array of message texts
      * @param  int|null  $date  Scheduled send time (UnixTime)
-     * @param  array|null  $types  Array of message display types
-     * @param  array|null  $localids  Array of local IDs for duplicate prevention
+     * @param  array<int, int>|null  $types  Array of message display types
+     * @param  array<int, int>|null  $localids  Array of local IDs for duplicate prevention
      * @param  int|null  $hide  Hide receptors in logs (1 to hide)
      * @param  string|null  $tag  Tag for categorization
      * @param  string|null  $policy  Custom sending flow policy
@@ -324,7 +321,7 @@ class KavenegarClient
      * Can check up to 500 messages per request.
      * Only works for messages sent within last 48 hours.
      *
-     * @param  string|array  $messageid  Message ID(s) to check
+     * @param  string|array<int, string>  $messageid  Message ID(s) to check
      * @return StatusResponse[]
      *
      * @throws KavenegarApiException
@@ -349,7 +346,7 @@ class KavenegarClient
      * Check delivery status by local message ID.
      * Only works for messages sent within last 12 hours.
      *
-     * @param  string|array  $localid  Local ID(s) to check
+     * @param  string|array<int, string>  $localid  Local ID(s) to check
      * @return StatusResponse[]
      *
      * @throws KavenegarApiException
@@ -410,7 +407,7 @@ class KavenegarClient
      * Can retrieve up to 500 messages per request.
      * Requires IP restriction configuration in panel.
      *
-     * @param  string|array  $messageid  Message ID(s) to retrieve
+     * @param  string|array<int, string>  $messageid  Message ID(s) to retrieve
      * @return MessageResponse[]
      *
      * @throws KavenegarApiException
@@ -542,7 +539,7 @@ class KavenegarClient
      * Can only cancel messages in queue or scheduled status.
      * Can cancel up to 500 messages per request.
      *
-     * @param  string|array  $messageid  Message ID(s) to cancel
+     * @param  string|array<int, string>  $messageid  Message ID(s) to cancel
      * @return MessageResponse[]
      *
      * @throws KavenegarApiException
@@ -629,7 +626,7 @@ class KavenegarClient
      * @param  string  $receptor  Recipient phone number
      * @param  string  $message  Message text to convert to speech
      * @param  int|null  $date  Scheduled call time (UnixTime)
-     * @param  array|null  $localid  Local IDs for duplicate prevention
+     * @param  array<int, int>|null  $localid  Local IDs for duplicate prevention
      * @return MessageResponse[]
      *
      * @throws KavenegarApiException

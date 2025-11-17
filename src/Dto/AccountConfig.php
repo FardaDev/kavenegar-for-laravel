@@ -15,6 +15,9 @@ readonly class AccountConfig
         public string $resendfailed
     ) {}
 
+    /**
+     * @param  array<string, mixed>  $data
+     */
     public static function fromArray(array $data): self
     {
         return new self(
