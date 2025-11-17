@@ -217,6 +217,8 @@ $result = Kavenegar::verifyLookup(
 
 #### Using Helper Methods
 
+The package includes a `KavenegarHelper` class with convenient methods for common verification scenarios. This helper automatically handles development environment skipping and token normalization.
+
 ```php
 use FardaDev\Kavenegar\Helpers\KavenegarHelper;
 
@@ -239,6 +241,8 @@ $result = $helper->sendTwoFactorCode(
     'user@example.com'
 );
 ```
+
+**Note:** The `KavenegarHelper` is a convenience implementation for common use cases. You can create your own custom helper class by injecting `KavenegarClient` and implementing logic specific to your application's needs.
 
 ### Checking Message Status
 
@@ -349,6 +353,62 @@ if ($config->hasApiLogsEnabled()) {
 
 
 ## Advanced Features
+
+### Creating Custom Helpers
+
+While the package includes `KavenegarHelper` for common scenarios, you can create your own custom helper tailored to your application's specific needs:
+
+```php
+<?php
+
+namespace App\Services;
+
+use FardaDev\Kavenegar\Client\KavenegarClient;
+use FardaDev\Kavenegar\Dto\MessageResponse;
+
+class MyCustomSmsService
+{
+    public function __construct(private readonly KavenegarClient $client) {}
+
+    public function sendOrderConfirmation(string $phone, string $orderNumber): MessageResponse
+    {
+        return $this->client->verifyLookup(
+            receptor: $phone,
+            template: 'order-confirmation',
+            token: $orderNumber
+        );
+    }
+
+    public function sendPasswordReset(string $phone, string $code, int $expiryMinutes): MessageResponse
+    {
+        return $this->client->verifyLookup(
+            receptor: $phone,
+            template: 'password-reset',
+            token: $code,
+            token2: (string) $expiryMinutes
+        );
+    }
+
+    // Add your own custom methods here
+}
+```
+
+Then use it in your application:
+
+```php
+use App\Services\MyCustomSmsService;
+
+class OrderController
+{
+    public function __construct(private MyCustomSmsService $sms) {}
+
+    public function confirmOrder($orderId)
+    {
+        $order = Order::find($orderId);
+        $this->sms->sendOrderConfirmation($order->phone, $order->number);
+    }
+}
+```
 
 ### Exception Handling
 

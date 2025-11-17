@@ -7,6 +7,18 @@ namespace FardaDev\Kavenegar\Helpers;
 use FardaDev\Kavenegar\Client\KavenegarClient;
 use FardaDev\Kavenegar\Dto\MessageResponse;
 
+/**
+ * Convenience helper for common Kavenegar operations.
+ *
+ * This helper provides ready-to-use methods for common verification scenarios
+ * (login codes, email/password, 2FA) with built-in development environment handling.
+ *
+ * Note: This is a convenience implementation. You can create your own helper class
+ * tailored to your specific needs by injecting KavenegarClient and implementing
+ * custom logic for your use cases.
+ *
+ * @see KavenegarClient For direct API access
+ */
 class KavenegarHelper
 {
     public function __construct(private readonly KavenegarClient $client) {}

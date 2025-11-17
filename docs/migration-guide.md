@@ -6,7 +6,7 @@ This guide helps you migrate from the old `kavenegar/laravel` package to the new
 
 The new package offers:
 
-- ✅ **Laravel 11+ compatibility** with modern PHP 8.2+ features
+- ✅ **Laravel 11+ compatibility** with modern PHP 8.3+ features
 - ✅ **Type safety** with readonly DTOs and strict typing
 - ✅ **Better error handling** with specific exception types
 - ✅ **Comprehensive testing** with Pest framework
@@ -310,7 +310,7 @@ composer require kavenegar/laravel
 
 After migration, you'll benefit from:
 
-- ✅ Full type safety with PHP 8.2+ features
+- ✅ Full type safety with PHP 8.3+ features
 - ✅ Better IDE autocomplete and type hints
 - ✅ Comprehensive exception handling
 - ✅ Modern Laravel 11+ compatibility
