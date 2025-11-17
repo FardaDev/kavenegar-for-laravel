@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace FardaDev\Kavenegar\Client;
 
@@ -16,7 +18,9 @@ use Illuminate\Support\Facades\Http;
 class KavenegarClient
 {
     private const BASE_URL = 'https://api.kavenegar.com/v1';
+
     private const MAX_SEND_BATCH = 200;
+
     private const MAX_STATUS_BATCH = 500;
 
     public function __construct(
@@ -52,7 +56,7 @@ class KavenegarClient
             return $this->handleResponse($response);
         } catch (ConnectionException $e) {
             throw new KavenegarHttpException(
-                message: 'Failed to connect to Kavenegar API: ' . $e->getMessage(),
+                message: 'Failed to connect to Kavenegar API: '.$e->getMessage(),
                 errorCode: 0,
                 context: ['url' => $url, 'method' => $httpMethod],
                 previous: $e
@@ -67,9 +71,9 @@ class KavenegarClient
      */
     private function handleResponse(Response $response): array
     {
-        if (!$response->successful()) {
+        if (! $response->successful()) {
             throw new KavenegarHttpException(
-                message: 'HTTP request failed with status ' . $response->status(),
+                message: 'HTTP request failed with status '.$response->status(),
                 errorCode: $response->status(),
                 context: ['body' => $response->body()]
             );
@@ -77,7 +81,7 @@ class KavenegarClient
 
         $data = $response->json();
 
-        if (!isset($data['return']['status'])) {
+        if (! isset($data['return']['status'])) {
             throw new KavenegarApiException(
                 message: 'Invalid API response format',
                 errorCode: 0,
@@ -157,7 +161,7 @@ class KavenegarClient
             );
         }
 
-        if (!preg_match('/^[a-zA-Z0-9_-]+$/', $tag)) {
+        if (! preg_match('/^[a-zA-Z0-9_-]+$/', $tag)) {
             throw new KavenegarValidationException(
                 message: 'Tag must contain only alphanumeric characters, hyphens, and underscores',
                 errorCode: 607,
@@ -169,16 +173,17 @@ class KavenegarClient
     /**
      * Send SMS to one or more recipients.
      *
-     * @param string|array $receptor Phone number(s) of recipient(s)
-     * @param string $message Message text (max 900 characters)
-     * @param string|null $sender Sender line number (uses default if null)
-     * @param int|null $date Scheduled send time (UnixTime)
-     * @param int|null $type Message display type (0-3, see docs)
-     * @param array|null $localid Local IDs for duplicate prevention
-     * @param int|null $hide Hide receptor in logs (1 to hide)
-     * @param string|null $tag Tag for categorization
-     * @param string|null $policy Custom sending flow policy
+     * @param  string|array  $receptor  Phone number(s) of recipient(s)
+     * @param  string  $message  Message text (max 900 characters)
+     * @param  string|null  $sender  Sender line number (uses default if null)
+     * @param  int|null  $date  Scheduled send time (UnixTime)
+     * @param  int|null  $type  Message display type (0-3, see docs)
+     * @param  array|null  $localid  Local IDs for duplicate prevention
+     * @param  int|null  $hide  Hide receptor in logs (1 to hide)
+     * @param  string|null  $tag  Tag for categorization
+     * @param  string|null  $policy  Custom sending flow policy
      * @return MessageResponse[]
+     *
      * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
@@ -240,21 +245,21 @@ class KavenegarClient
         );
     }
 
-
     /**
      * Send multiple different messages to different recipients from different senders.
      * All arrays must have the same length. Uses POST method.
      *
-     * @param array $senders Array of sender line numbers
-     * @param array $receptors Array of recipient phone numbers
-     * @param array $messages Array of message texts
-     * @param int|null $date Scheduled send time (UnixTime)
-     * @param array|null $types Array of message display types
-     * @param array|null $localids Array of local IDs for duplicate prevention
-     * @param int|null $hide Hide receptors in logs (1 to hide)
-     * @param string|null $tag Tag for categorization
-     * @param string|null $policy Custom sending flow policy
+     * @param  array  $senders  Array of sender line numbers
+     * @param  array  $receptors  Array of recipient phone numbers
+     * @param  array  $messages  Array of message texts
+     * @param  int|null  $date  Scheduled send time (UnixTime)
+     * @param  array|null  $types  Array of message display types
+     * @param  array|null  $localids  Array of local IDs for duplicate prevention
+     * @param  int|null  $hide  Hide receptors in logs (1 to hide)
+     * @param  string|null  $tag  Tag for categorization
+     * @param  string|null  $policy  Custom sending flow policy
      * @return MessageResponse[]
+     *
      * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
@@ -314,14 +319,14 @@ class KavenegarClient
         );
     }
 
-
     /**
      * Check delivery status of sent messages by message ID.
      * Can check up to 500 messages per request.
      * Only works for messages sent within last 48 hours.
      *
-     * @param string|array $messageid Message ID(s) to check
+     * @param  string|array  $messageid  Message ID(s) to check
      * @return StatusResponse[]
+     *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
@@ -344,8 +349,9 @@ class KavenegarClient
      * Check delivery status by local message ID.
      * Only works for messages sent within last 12 hours.
      *
-     * @param string|array $localid Local ID(s) to check
+     * @param  string|array  $localid  Local ID(s) to check
      * @return StatusResponse[]
+     *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
@@ -368,10 +374,11 @@ class KavenegarClient
      * Get list of messages sent to a specific receptor within a date range.
      * Maximum date range is 1 day.
      *
-     * @param string $receptor Recipient phone number
-     * @param int $startdate Start of date range (UnixTime)
-     * @param int|null $enddate End of date range (UnixTime, defaults to +1 day)
+     * @param  string  $receptor  Recipient phone number
+     * @param  int  $startdate  Start of date range (UnixTime)
+     * @param  int|null  $enddate  End of date range (UnixTime, defaults to +1 day)
      * @return StatusResponse[]
+     *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
@@ -398,14 +405,14 @@ class KavenegarClient
         );
     }
 
-
     /**
      * Get full details of sent messages by message ID.
      * Can retrieve up to 500 messages per request.
      * Requires IP restriction configuration in panel.
      *
-     * @param string|array $messageid Message ID(s) to retrieve
+     * @param  string|array  $messageid  Message ID(s) to retrieve
      * @return MessageResponse[]
+     *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
@@ -429,10 +436,11 @@ class KavenegarClient
      * Maximum date range is 1 day. Start date must be within last 3 days.
      * Returns up to 500 messages. Requires IP restriction configuration.
      *
-     * @param int $startdate Start of date range (UnixTime)
-     * @param int|null $enddate End of date range (UnixTime, defaults to now)
-     * @param string|null $sender Filter by specific sender line
+     * @param  int  $startdate  Start of date range (UnixTime)
+     * @param  int|null  $enddate  End of date range (UnixTime, defaults to now)
+     * @param  string|null  $sender  Filter by specific sender line
      * @return MessageResponse[]
+     *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
@@ -466,9 +474,10 @@ class KavenegarClient
      * Get the most recent sent messages.
      * Returns up to 500 messages. Requires IP restriction configuration.
      *
-     * @param int|null $pagesize Number of messages to retrieve (max 500)
-     * @param string|null $sender Filter by specific sender line
+     * @param  int|null  $pagesize  Number of messages to retrieve (max 500)
+     * @param  string|null  $sender  Filter by specific sender line
      * @return MessageResponse[]
+     *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
@@ -497,10 +506,11 @@ class KavenegarClient
      * Count sent messages within a date range.
      * Maximum date range is 1 day.
      *
-     * @param int $startdate Start of date range (UnixTime)
-     * @param int|null $enddate End of date range (UnixTime, defaults to +1 day)
-     * @param int|null $status Filter by specific status code
+     * @param  int  $startdate  Start of date range (UnixTime)
+     * @param  int|null  $enddate  End of date range (UnixTime, defaults to +1 day)
+     * @param  int|null  $status  Filter by specific status code
      * @return int Number of messages
+     *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
@@ -527,14 +537,14 @@ class KavenegarClient
         return (int) ($entries[0]['count'] ?? 0);
     }
 
-
     /**
      * Cancel scheduled messages before they are sent.
      * Can only cancel messages in queue or scheduled status.
      * Can cancel up to 500 messages per request.
      *
-     * @param string|array $messageid Message ID(s) to cancel
+     * @param  string|array  $messageid  Message ID(s) to cancel
      * @return MessageResponse[]
+     *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
@@ -553,21 +563,20 @@ class KavenegarClient
         );
     }
 
-
     /**
      * Send verification code using pre-defined template.
      * Templates must be created in Kavenegar panel first.
      * Supports up to 20 token parameters (token, token2, token3, ..., token20).
      *
-     * @param string $receptor Recipient phone number
-     * @param string $template Template name from panel
-     * @param string $token First token value
-     * @param string|null $token2 Second token value
-     * @param string|null $token3 Third token value
-     * @param string|null $token10 Tenth token value
-     * @param string|null $token20 Twentieth token value
-     * @param int|null $type Message display type (0-3)
-     * @return MessageResponse
+     * @param  string  $receptor  Recipient phone number
+     * @param  string  $template  Template name from panel
+     * @param  string  $token  First token value
+     * @param  string|null  $token2  Second token value
+     * @param  string|null  $token3  Third token value
+     * @param  string|null  $token10  Tenth token value
+     * @param  string|null  $token20  Twentieth token value
+     * @param  int|null  $type  Message display type (0-3)
+     *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
@@ -613,16 +622,16 @@ class KavenegarClient
         return MessageResponse::fromArray($entries[0]);
     }
 
-
     /**
      * Send text-to-speech voice call.
      * Converts text message to voice and calls the recipient.
      *
-     * @param string $receptor Recipient phone number
-     * @param string $message Message text to convert to speech
-     * @param int|null $date Scheduled call time (UnixTime)
-     * @param array|null $localid Local IDs for duplicate prevention
+     * @param  string  $receptor  Recipient phone number
+     * @param  string  $message  Message text to convert to speech
+     * @param  int|null  $date  Scheduled call time (UnixTime)
+     * @param  array|null  $localid  Local IDs for duplicate prevention
      * @return MessageResponse[]
+     *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
@@ -654,11 +663,9 @@ class KavenegarClient
         );
     }
 
-
     /**
      * Get account information including credit balance and expiry date.
      *
-     * @return AccountInfo
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
@@ -673,7 +680,6 @@ class KavenegarClient
     /**
      * Get account configuration settings.
      *
-     * @return AccountConfig
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */

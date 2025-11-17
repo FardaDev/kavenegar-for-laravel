@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace FardaDev\Kavenegar\Dto;
 
@@ -49,8 +51,9 @@ readonly class AccountInfo
      */
     public function getExpiryDate(): \DateTime
     {
-        $date = new \DateTime();
+        $date = new \DateTime;
         $date->setTimestamp($this->expiredate);
+
         return $date;
     }
 }

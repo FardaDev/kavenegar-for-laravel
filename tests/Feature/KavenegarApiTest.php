@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use FardaDev\Kavenegar\Client\KavenegarClient;
+use FardaDev\Kavenegar\Dto\AccountConfig;
+use FardaDev\Kavenegar\Dto\AccountInfo;
 use FardaDev\Kavenegar\Dto\MessageResponse;
 use FardaDev\Kavenegar\Dto\StatusResponse;
-use FardaDev\Kavenegar\Dto\AccountInfo;
-use FardaDev\Kavenegar\Dto\AccountConfig;
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
@@ -106,6 +108,7 @@ describe('Send SMS', function () {
 
         Http::assertSent(function ($request) {
             $url = $request->url();
+
             return str_contains($url, 'sender=10004346')
                 && str_contains($url, 'type=1')
                 && str_contains($url, 'hide=1')
@@ -316,6 +319,7 @@ describe('Verify Lookup', function () {
 
         Http::assertSent(function ($request) {
             $url = $request->url();
+
             return str_contains($url, 'token2=user@example.com')
                 && str_contains($url, 'token3=extra-data');
         });

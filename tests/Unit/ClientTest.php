@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use FardaDev\Kavenegar\Client\KavenegarClient;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
@@ -7,7 +9,7 @@ use Illuminate\Support\Facades\Http;
 describe('Client Validation', function () {
     it('validates tag format - rejects tags over 200 characters', function () {
         $client = new KavenegarClient('test-api-key');
-        
+
         Http::fake();
 
         expect(fn () => $client->send(
@@ -19,7 +21,7 @@ describe('Client Validation', function () {
 
     it('validates tag format - rejects special characters', function () {
         $client = new KavenegarClient('test-api-key');
-        
+
         Http::fake();
 
         expect(fn () => $client->send(
@@ -31,7 +33,7 @@ describe('Client Validation', function () {
 
     it('validates tag format - accepts valid tags', function () {
         $client = new KavenegarClient('test-api-key');
-        
+
         Http::fake([
             '*' => Http::response([
                 'return' => ['status' => 200, 'message' => 'OK'],
@@ -62,7 +64,7 @@ describe('Client Validation', function () {
 
     it('validates array lengths in sendArray', function () {
         $client = new KavenegarClient('test-api-key');
-        
+
         Http::fake();
 
         // Mismatched array lengths
@@ -75,7 +77,7 @@ describe('Client Validation', function () {
 
     it('validates array lengths with optional parameters', function () {
         $client = new KavenegarClient('test-api-key');
-        
+
         Http::fake();
 
         // Types array length mismatch
@@ -89,7 +91,7 @@ describe('Client Validation', function () {
 
     it('accepts matching array lengths', function () {
         $client = new KavenegarClient('test-api-key');
-        
+
         Http::fake([
             '*' => Http::response([
                 'return' => ['status' => 200, 'message' => 'OK'],
@@ -149,7 +151,7 @@ describe('Client Constructor', function () {
 describe('Client Helper Methods', function () {
     it('converts array to comma-separated string', function () {
         $client = new KavenegarClient('test-api-key');
-        
+
         Http::fake([
             '*' => Http::response([
                 'return' => ['status' => 200, 'message' => 'OK'],
@@ -192,7 +194,7 @@ describe('Client Helper Methods', function () {
 
     it('handles string receptor', function () {
         $client = new KavenegarClient('test-api-key');
-        
+
         Http::fake([
             '*' => Http::response([
                 'return' => ['status' => 200, 'message' => 'OK'],

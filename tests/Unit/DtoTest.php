@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use FardaDev\Kavenegar\Dto\AccountConfig;
 use FardaDev\Kavenegar\Dto\AccountInfo;
