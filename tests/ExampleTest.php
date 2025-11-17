@@ -1,5 +1,7 @@
 <?php
 
-it('can test', function () {
+declare(strict_types=1);
+
+test('example test passes', function () {
     expect(true)->toBeTrue();
 });
