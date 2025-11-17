@@ -1,13 +1,13 @@
 # Kavenegar Laravel Package
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/fardadev/kavenegar-laravel.svg?style=flat-square)](https://packagist.org/packages/fardadev/kavenegar-laravel)
-[![Total Downloads](https://img.shields.io/packagist/dt/fardadev/kavenegar-laravel.svg?style=flat-square)](https://packagist.org/packages/fardadev/kavenegar-laravel)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/fardadev/kavenegar-for-laravel.svg?style=flat-square)](https://packagist.org/packages/fardadev/kavenegar-for-laravel)
+[![Total Downloads](https://img.shields.io/packagist/dt/fardadev/kavenegar-for-laravel.svg?style=flat-square)](https://packagist.org/packages/fardadev/kavenegar-for-laravel)
 
-Modern Laravel 12+ package for [Kavenegar](https://kavenegar.com) SMS API integration with full type safety, comprehensive testing, and Laravel best practices.
+Modern Laravel 11+ package for [Kavenegar](https://kavenegar.com) SMS API integration with full type safety, comprehensive testing, and Laravel best practices.
 
 ## Features
 
-- ✅ **Laravel 12+ Compatible** - Built for modern Laravel with PHP 8.2+
+- ✅ **Laravel 11+ Compatible** - Built for modern Laravel with PHP 8.2+
 - ✅ **Full Type Safety** - Strongly typed with readonly DTOs and return types
 - ✅ **Auto-Discovery** - Automatic service provider and facade registration
 - ✅ **Comprehensive API Coverage** - All Kavenegar endpoints supported
@@ -28,7 +28,7 @@ Modern Laravel 12+ package for [Kavenegar](https://kavenegar.com) SMS API integr
 Install the package via Composer:
 
 ```bash
-composer require fardadev/kavenegar-laravel
+composer require fardadev/kavenegar-for-laravel
 ```
 
 The package will automatically register itself thanks to Laravel's auto-discovery feature.
@@ -543,7 +543,7 @@ Contributions are welcome! Please see [CONTRIBUTING](CONTRIBUTING.md) for detail
 
 ## Security
 
-If you discover any security-related issues, please email dev@farda.dev instead of using the issue tracker.
+If you discover any security-related issues, please email dev@fardadev.com instead of using the issue tracker.
 
 ## Credits
 
@@ -557,5 +557,5 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 ## Support
 
 - [Kavenegar Documentation](https://kavenegar.com/rest.html)
-- [GitHub Issues](https://github.com/fardadev/kavenegar-laravel/issues)
-- Email: dev@farda.dev
+- [GitHub Issues](https://github.com/FardaDev/kavenegar-for-laravel/issues)
+- Email: dev@fardadev.com
