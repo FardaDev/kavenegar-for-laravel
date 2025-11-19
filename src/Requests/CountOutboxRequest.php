@@ -42,7 +42,7 @@ readonly class CountOutboxRequest
         if ($validator->fails()) {
             throw new KavenegarValidationException(
                 message: implode("\n", $validator->errors()->all()),
-                errorCode: ApiErrorCodeEnum::INVALID_INPUT->value,
+                errorCode: ApiErrorCodeEnum::INVALID_DATE->value,
                 context: ['errors' => $validator->errors()->toArray()]
             );
         }
@@ -50,7 +50,7 @@ readonly class CountOutboxRequest
         if ($this->enddate !== null && ($this->enddate - $this->startdate) > 86400) {
             throw new KavenegarValidationException(
                 message: 'بازه زمانی نمی‌تواند بیشتر از یک روز باشد',
-                errorCode: ApiErrorCodeEnum::INVALID_INPUT->value,
+                errorCode: ApiErrorCodeEnum::INVALID_DATE->value,
                 context: ['startdate' => $this->startdate, 'enddate' => $this->enddate, 'max_range' => '1 day']
             );
         }

@@ -12,6 +12,7 @@ use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
 use FardaDev\Kavenegar\Requests\CancelRequest;
+use FardaDev\Kavenegar\Requests\CountOutboxRequest;
 use FardaDev\Kavenegar\Requests\LatestOutboxRequest;
 use FardaDev\Kavenegar\Requests\SelectRequest;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
@@ -394,30 +395,15 @@ class KavenegarClient
      * Count sent messages within a date range.
      * Maximum date range is 1 day.
      *
-     * @param  int  $startdate  Start of date range (UnixTime)
-     * @param  int|null  $enddate  End of date range (UnixTime, defaults to +1 day)
-     * @param  int|null  $status  Filter by specific status code
      * @return int Number of messages
      *
+     * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function countOutbox(
-        int $startdate,
-        ?int $enddate = null,
-        ?int $status = null
-    ): int {
-        $params = [
-            'startdate' => $startdate,
-        ];
-
-        if ($enddate !== null) {
-            $params['enddate'] = $enddate;
-        }
-
-        if ($status !== null) {
-            $params['status'] = $status;
-        }
+    public function countOutbox(CountOutboxRequest $request): int
+    {
+        $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/countoutbox');
         $entries = $this->executeRequest($url, $params);
