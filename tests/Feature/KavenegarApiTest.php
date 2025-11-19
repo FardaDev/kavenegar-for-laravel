@@ -11,6 +11,7 @@ use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
 use FardaDev\Kavenegar\Facades\Kavenegar;
+use FardaDev\Kavenegar\Requests\SendMessageRequest;
 use Illuminate\Support\Facades\Http;
 
 describe('Send SMS', function () {
@@ -31,7 +32,12 @@ describe('Send SMS', function () {
             ]),
         ]);
 
-        $result = Kavenegar::send('09123456789', 'Test message');
+        $request = new SendMessageRequest(
+            receptor: '09123456789',
+            message: 'Test message'
+        );
+        
+        $result = Kavenegar::send($request);
 
         expect($result)->toBeArray()
             ->toHaveCount(1)
@@ -70,7 +76,12 @@ describe('Send SMS', function () {
             ]),
         ]);
 
-        $result = Kavenegar::send(['09123456789', '09987654321'], 'Test');
+        $request = new SendMessageRequest(
+            receptor: ['09123456789', '09987654321'],
+            message: 'Test'
+        );
+        
+        $result = Kavenegar::send($request);
 
         expect($result)->toHaveCount(2);
     });
@@ -92,17 +103,19 @@ describe('Send SMS', function () {
             ]),
         ]);
 
-        $result = Kavenegar::send(
+        $request = new SendMessageRequest(
             receptor: '09123456789',
             message: 'Test',
             sender: '10004346',
             date: time() + 3600,
-            type: 1,
+            type: \FardaDev\Kavenegar\Enums\MessageTypeEnum::NORMAL,
             localid: [123],
             hide: 1,
             tag: 'test-tag',
             policy: 'high-priority'
         );
+        
+        $result = Kavenegar::send($request);
 
         expect($result[0]->status->value)->toBe(2);
 
@@ -124,8 +137,13 @@ describe('Send SMS', function () {
             ]),
         ]);
 
-        expect(fn () => Kavenegar::send('invalid', 'Test'))
-            ->toThrow(KavenegarApiException::class);
+        expect(function () {
+            $request = new SendMessageRequest(
+                receptor: 'invalid',
+                message: 'Test'
+            );
+            Kavenegar::send($request);
+        })->toThrow(KavenegarValidationException::class);
     });
 
     it('throws exception for insufficient credit', function () {
@@ -136,9 +154,14 @@ describe('Send SMS', function () {
             ]),
         ]);
 
-        expect(fn () => Kavenegar::send('09123456789', 'Test'))
+        $request = new SendMessageRequest(
+            receptor: '09123456789',
+            message: 'Test'
+        );
+        
+        expect(fn () => Kavenegar::send($request))
             ->toThrow(KavenegarApiException::class)
-            ->and(fn () => Kavenegar::send('09123456789', 'Test'))
+            ->and(fn () => Kavenegar::send($request))
             ->toThrow(fn (KavenegarApiException $e) => $e->errorCode === 418);
     });
 });
@@ -379,9 +402,14 @@ describe('Error Handling', function () {
             ]),
         ]);
 
-        expect(fn () => Kavenegar::send('09123456789', 'Test'))
+        $request = new SendMessageRequest(
+            receptor: '09123456789',
+            message: 'Test'
+        );
+        
+        expect(fn () => Kavenegar::send($request))
             ->toThrow(KavenegarApiException::class)
-            ->and(fn () => Kavenegar::send('09123456789', 'Test'))
+            ->and(fn () => Kavenegar::send($request))
             ->toThrow(fn (KavenegarApiException $e) => $e->errorCode === 401);
     });
 
@@ -390,7 +418,12 @@ describe('Error Handling', function () {
             throw new \Illuminate\Http\Client\ConnectionException('Connection timeout');
         });
 
-        expect(fn () => Kavenegar::send('09123456789', 'Test'))
+        $request = new SendMessageRequest(
+            receptor: '09123456789',
+            message: 'Test'
+        );
+        
+        expect(fn () => Kavenegar::send($request))
             ->toThrow(KavenegarHttpException::class, 'Failed to connect to Kavenegar API');
     });
 
@@ -399,7 +432,12 @@ describe('Error Handling', function () {
             '*' => Http::response('Server Error', 500),
         ]);
 
-        expect(fn () => Kavenegar::send('09123456789', 'Test'))
+        $request = new SendMessageRequest(
+            receptor: '09123456789',
+            message: 'Test'
+        );
+        
+        expect(fn () => Kavenegar::send($request))
             ->toThrow(KavenegarHttpException::class);
     });
 
@@ -411,7 +449,12 @@ describe('Error Handling', function () {
             ]),
         ]);
 
-        expect(fn () => Kavenegar::send('09123456789', 'Test'))
+        $request = new SendMessageRequest(
+            receptor: '09123456789',
+            message: 'Test'
+        );
+        
+        expect(fn () => Kavenegar::send($request))
             ->toThrow(function (KavenegarApiException $e) {
                 expect($e->getContext())->toBeArray()
                     ->and($e->errorCode)->toBe(418);
@@ -439,7 +482,12 @@ describe('Facade vs Direct Usage', function () {
             ]),
         ]);
 
-        $result = Kavenegar::send('09123456789', 'Test');
+        $request = new SendMessageRequest(
+            receptor: '09123456789',
+            message: 'Test'
+        );
+        
+        $result = Kavenegar::send($request);
 
         expect($result)->toBeArray()->toHaveCount(1);
     });
@@ -462,7 +510,12 @@ describe('Facade vs Direct Usage', function () {
         ]);
 
         $client = app(KavenegarClient::class);
-        $result = $client->send('09123456789', 'Test');
+        $request = new SendMessageRequest(
+            receptor: '09123456789',
+            message: 'Test'
+        );
+        
+        $result = $client->send($request);
 
         expect($result)->toBeArray()->toHaveCount(1);
     });

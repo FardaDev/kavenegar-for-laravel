@@ -11,6 +11,7 @@ use FardaDev\Kavenegar\Dto\StatusResponse;
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Requests\SendMessageRequest;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -170,67 +171,18 @@ class KavenegarClient
     /**
      * Send SMS to one or more recipients.
      *
-     * @param  string|array<int, string>  $receptor  Phone number(s) of recipient(s)
-     * @param  string  $message  Message text (max 900 characters)
-     * @param  string|null  $sender  Sender line number (uses default if null)
-     * @param  int|null  $date  Scheduled send time (UnixTime)
-     * @param  int|null  $type  Message display type (0-3, see docs)
-     * @param  array<int, int>|null  $localid  Local IDs for duplicate prevention
-     * @param  int|null  $hide  Hide receptor in logs (1 to hide)
-     * @param  string|null  $tag  Tag for categorization
-     * @param  string|null  $policy  Custom sending flow policy
      * @return array<int, MessageResponse>
      *
      * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function send(
-        string|array $receptor,
-        string $message,
-        ?string $sender = null,
-        ?int $date = null,
-        ?int $type = null,
-        ?array $localid = null,
-        ?int $hide = null,
-        ?string $tag = null,
-        ?string $policy = null
-    ): array {
-        $this->validateTag($tag);
+    public function send(SendMessageRequest $request): array
+    {
+        $params = $request->toApiParams();
 
-        $params = [
-            'receptor' => $this->toCommaSeparated($receptor),
-            'message' => $message,
-        ];
-
-        if ($sender !== null) {
-            $params['sender'] = $sender;
-        } elseif ($this->defaultSender !== null) {
+        if (! isset($params['sender']) && $this->defaultSender !== null) {
             $params['sender'] = $this->defaultSender;
-        }
-
-        if ($date !== null) {
-            $params['date'] = $date;
-        }
-
-        if ($type !== null) {
-            $params['type'] = $type;
-        }
-
-        if ($localid !== null) {
-            $params['localid'] = $this->toCommaSeparated($localid);
-        }
-
-        if ($hide !== null) {
-            $params['hide'] = $hide;
-        }
-
-        if ($tag !== null) {
-            $params['tag'] = $tag;
-        }
-
-        if ($policy !== null) {
-            $params['policy'] = $policy;
         }
 
         $url = $this->buildUrl('sms/send');

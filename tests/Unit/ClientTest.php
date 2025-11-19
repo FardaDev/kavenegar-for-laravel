@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use FardaDev\Kavenegar\Client\KavenegarClient;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Requests\SendMessageRequest;
 use Illuminate\Support\Facades\Http;
 
 describe('Client Validation', function () {
@@ -12,11 +13,11 @@ describe('Client Validation', function () {
 
         Http::fake();
 
-        expect(fn () => $client->send(
+        expect(fn () => new SendMessageRequest(
             receptor: '09123456789',
             message: 'test',
             tag: str_repeat('a', 201)
-        ))->toThrow(KavenegarValidationException::class, 'Tag must not exceed 200 characters');
+        ))->toThrow(KavenegarValidationException::class, 'تگ tag نباید بیشتر از 200 کاراکتر باشد');
     });
 
     it('validates tag format - rejects special characters', function () {
@@ -24,11 +25,11 @@ describe('Client Validation', function () {
 
         Http::fake();
 
-        expect(fn () => $client->send(
+        expect(fn () => new SendMessageRequest(
             receptor: '09123456789',
             message: 'test',
             tag: 'invalid@tag!'
-        ))->toThrow(KavenegarValidationException::class, 'Tag must contain only alphanumeric characters');
+        ))->toThrow(KavenegarValidationException::class, 'تگ tag فقط می‌تواند شامل حروف و اعداد انگلیسی، خط تیره و زیرخط باشد');
     });
 
     it('validates tag format - accepts valid tags', function () {
@@ -54,11 +55,13 @@ describe('Client Validation', function () {
         $validTags = ['test', 'test-tag', 'test_tag', 'test123', 'TEST-TAG_123'];
 
         foreach ($validTags as $tag) {
-            expect(fn () => $client->send(
+            $request = new SendMessageRequest(
                 receptor: '09123456789',
                 message: 'test',
                 tag: $tag
-            ))->not->toThrow(KavenegarValidationException::class);
+            );
+            
+            expect(fn () => $client->send($request))->not->toThrow(KavenegarValidationException::class);
         }
     });
 
@@ -180,10 +183,12 @@ describe('Client Helper Methods', function () {
             ]),
         ]);
 
-        $result = $client->send(
+        $request = new SendMessageRequest(
             receptor: ['09123456789', '09987654321'],
             message: 'test'
         );
+        
+        $result = $client->send($request);
 
         expect($result)->toHaveCount(2);
 
@@ -214,10 +219,12 @@ describe('Client Helper Methods', function () {
             ]),
         ]);
 
-        $result = $client->send(
+        $request = new SendMessageRequest(
             receptor: '09123456789',
             message: 'test'
         );
+        
+        $result = $client->send($request);
 
         expect($result)->toHaveCount(1);
     });
