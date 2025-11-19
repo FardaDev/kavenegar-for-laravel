@@ -13,7 +13,7 @@ describe('SendMessageRequest', function () {
             receptor: '09123456789',
             message: 'Test message'
         );
-        
+
         expect($request->receptor)->toBe('09123456789');
         expect($request->message)->toBe('Test message');
     });
@@ -23,7 +23,7 @@ describe('SendMessageRequest', function () {
             receptor: ['09123456789', '09987654321'],
             message: 'Test message'
         );
-        
+
         expect($request->receptor)->toBeArray();
         expect($request->receptor)->toHaveCount(2);
     });
@@ -40,35 +40,35 @@ describe('SendMessageRequest', function () {
             tag: 'test-tag',
             policy: 'test-policy'
         );
-        
+
         expect($request->sender)->toBe('10004346');
         expect($request->type)->toBe(MessageTypeEnum::NORMAL);
         expect($request->tag)->toBe('test-tag');
     });
 
     it('throws exception for invalid receptor format', function () {
-        expect(fn() => new SendMessageRequest(
+        expect(fn () => new SendMessageRequest(
             receptor: 'invalid',
             message: 'Test message'
         ))->toThrow(KavenegarValidationException::class);
     });
 
     it('throws exception for empty message', function () {
-        expect(fn() => new SendMessageRequest(
+        expect(fn () => new SendMessageRequest(
             receptor: '09123456789',
             message: ''
         ))->toThrow(KavenegarValidationException::class);
     });
 
     it('throws exception for message exceeding 900 characters', function () {
-        expect(fn() => new SendMessageRequest(
+        expect(fn () => new SendMessageRequest(
             receptor: '09123456789',
             message: str_repeat('a', 901)
         ))->toThrow(KavenegarValidationException::class);
     });
 
     it('throws exception for invalid sender format', function () {
-        expect(fn() => new SendMessageRequest(
+        expect(fn () => new SendMessageRequest(
             receptor: '09123456789',
             message: 'Test message',
             sender: 'invalid'
@@ -76,7 +76,7 @@ describe('SendMessageRequest', function () {
     });
 
     it('throws exception for past date', function () {
-        expect(fn() => new SendMessageRequest(
+        expect(fn () => new SendMessageRequest(
             receptor: '09123456789',
             message: 'Test message',
             date: time() - 3600
@@ -84,7 +84,7 @@ describe('SendMessageRequest', function () {
     });
 
     it('throws exception for invalid tag format', function () {
-        expect(fn() => new SendMessageRequest(
+        expect(fn () => new SendMessageRequest(
             receptor: '09123456789',
             message: 'Test message',
             tag: 'invalid tag!'
@@ -93,8 +93,8 @@ describe('SendMessageRequest', function () {
 
     it('throws exception for more than 200 receptors', function () {
         $receptors = array_fill(0, 201, '09123456789');
-        
-        expect(fn() => new SendMessageRequest(
+
+        expect(fn () => new SendMessageRequest(
             receptor: $receptors,
             message: 'Test message'
         ))->toThrow(KavenegarValidationException::class);
@@ -107,9 +107,9 @@ describe('SendMessageRequest', function () {
             sender: '10004346',
             type: MessageTypeEnum::NORMAL
         );
-        
+
         $params = $request->toApiParams();
-        
+
         expect($params)->toBeArray();
         expect($params)->toHaveKey('receptor');
         expect($params)->toHaveKey('message');
@@ -123,9 +123,9 @@ describe('SendMessageRequest', function () {
             receptor: ['09123456789', '09987654321'],
             message: 'Test message'
         );
-        
+
         $params = $request->toApiParams();
-        
+
         expect($params['receptor'])->toBe('09123456789,09987654321');
     });
 
@@ -134,9 +134,9 @@ describe('SendMessageRequest', function () {
             receptor: '09123456789',
             message: 'Test message'
         );
-        
+
         $params = $request->toApiParams();
-        
+
         expect($params)->not->toHaveKey('sender');
         expect($params)->not->toHaveKey('date');
         expect($params)->not->toHaveKey('type');

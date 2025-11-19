@@ -6,11 +6,11 @@ namespace FardaDev\Kavenegar\Enums;
 
 /**
  * Message status codes from Kavenegar API (جدول ۲ - وضعیت پیامک‌ها).
- * 
+ *
  * Values and messages are from official Kavenegar documentation and must match exactly
  * for proper API integration. Messages are hardcoded in Persian as this is the official
  * API response language from Kavenegar service.
- * 
+ *
  * @see https://kavenegar.com/rest.html#result-send
  */
 enum MessageStatusEnum: int
@@ -66,4 +66,3 @@ enum MessageStatusEnum: int
         ], true);
     }
 }
-

@@ -6,12 +6,12 @@ namespace FardaDev\Kavenegar\Enums;
 
 /**
  * Message display types on recipient device (جدول ۳ - نوع نمایش پیام).
- * 
+ *
  * Values and descriptions are from official Kavenegar documentation. These control
  * how the SMS is displayed and stored on the recipient's device.
- * 
+ *
  * Note: Type parameter is only available for 3000-series lines.
- * 
+ *
  * @see https://kavenegar.com/rest.html#result-msgmode
  */
 enum MessageTypeEnum: int

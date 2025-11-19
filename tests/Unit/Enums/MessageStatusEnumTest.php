@@ -42,7 +42,7 @@ describe('MessageStatusEnum', function () {
         expect(MessageStatusEnum::UNDELIVERED->isFailed())->toBeTrue();
         expect(MessageStatusEnum::CANCELLED->isFailed())->toBeTrue();
         expect(MessageStatusEnum::BLOCKED->isFailed())->toBeTrue();
-        
+
         expect(MessageStatusEnum::DELIVERED->isFailed())->toBeFalse();
         expect(MessageStatusEnum::IN_QUEUE->isFailed())->toBeFalse();
     });
@@ -52,7 +52,7 @@ describe('MessageStatusEnum', function () {
         expect(MessageStatusEnum::SCHEDULED->isPending())->toBeTrue();
         expect(MessageStatusEnum::SENT_TO_OPERATOR_1->isPending())->toBeTrue();
         expect(MessageStatusEnum::SENT_TO_OPERATOR_2->isPending())->toBeTrue();
-        
+
         expect(MessageStatusEnum::DELIVERED->isPending())->toBeFalse();
         expect(MessageStatusEnum::FAILED->isPending())->toBeFalse();
     });

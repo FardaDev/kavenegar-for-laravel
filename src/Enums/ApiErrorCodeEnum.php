@@ -6,11 +6,11 @@ namespace FardaDev\Kavenegar\Enums;
 
 /**
  * API error codes from Kavenegar (جدول ۱ - کدهای برگشتی).
- * 
+ *
  * Values and messages are from official Kavenegar documentation and must match exactly
  * for proper error handling. Messages are hardcoded in Persian as this is the official
  * API response language from Kavenegar service.
- * 
+ *
  * @see https://kavenegar.com/rest.html#result-general
  */
 enum ApiErrorCodeEnum: int

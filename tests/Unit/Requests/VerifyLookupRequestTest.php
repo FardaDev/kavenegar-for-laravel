@@ -14,7 +14,7 @@ describe('VerifyLookupRequest', function () {
             template: 'verify-template',
             token: '123456'
         );
-        
+
         expect($request->receptor)->toBe('09123456789');
         expect($request->template)->toBe('verify-template');
         expect($request->token)->toBe('123456');
@@ -30,7 +30,7 @@ describe('VerifyLookupRequest', function () {
             token10: 'tenth',
             token20: 'twentieth'
         );
-        
+
         expect($request->token2)->toBe('second');
         expect($request->token3)->toBe('third');
         expect($request->token10)->toBe('tenth');
@@ -44,12 +44,12 @@ describe('VerifyLookupRequest', function () {
             token: '123456',
             type: MessageTypeEnum::FLASH
         );
-        
+
         expect($request->type)->toBe(MessageTypeEnum::FLASH);
     });
 
     it('throws exception for invalid receptor format', function () {
-        expect(fn() => new VerifyLookupRequest(
+        expect(fn () => new VerifyLookupRequest(
             receptor: 'invalid',
             template: 'verify-template',
             token: '123456'
@@ -57,7 +57,7 @@ describe('VerifyLookupRequest', function () {
     });
 
     it('throws exception for empty template', function () {
-        expect(fn() => new VerifyLookupRequest(
+        expect(fn () => new VerifyLookupRequest(
             receptor: '09123456789',
             template: '',
             token: '123456'
@@ -65,7 +65,7 @@ describe('VerifyLookupRequest', function () {
     });
 
     it('throws exception for template exceeding 100 characters', function () {
-        expect(fn() => new VerifyLookupRequest(
+        expect(fn () => new VerifyLookupRequest(
             receptor: '09123456789',
             template: str_repeat('a', 101),
             token: '123456'
@@ -73,7 +73,7 @@ describe('VerifyLookupRequest', function () {
     });
 
     it('throws exception for empty token', function () {
-        expect(fn() => new VerifyLookupRequest(
+        expect(fn () => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: ''
@@ -81,7 +81,7 @@ describe('VerifyLookupRequest', function () {
     });
 
     it('throws exception for token exceeding 100 characters', function () {
-        expect(fn() => new VerifyLookupRequest(
+        expect(fn () => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: str_repeat('a', 101)
@@ -89,7 +89,7 @@ describe('VerifyLookupRequest', function () {
     });
 
     it('throws exception for token with spaces', function () {
-        expect(fn() => new VerifyLookupRequest(
+        expect(fn () => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: 'کد تایید'
@@ -97,7 +97,7 @@ describe('VerifyLookupRequest', function () {
     });
 
     it('throws exception for token2 exceeding 100 characters', function () {
-        expect(fn() => new VerifyLookupRequest(
+        expect(fn () => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: '123456',
@@ -106,7 +106,7 @@ describe('VerifyLookupRequest', function () {
     });
 
     it('throws exception for token3 exceeding 100 characters', function () {
-        expect(fn() => new VerifyLookupRequest(
+        expect(fn () => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: '123456',
@@ -115,7 +115,7 @@ describe('VerifyLookupRequest', function () {
     });
 
     it('throws exception for token10 exceeding 100 characters', function () {
-        expect(fn() => new VerifyLookupRequest(
+        expect(fn () => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: '123456',
@@ -124,7 +124,7 @@ describe('VerifyLookupRequest', function () {
     });
 
     it('throws exception for token10 with more than 5 spaces', function () {
-        expect(fn() => new VerifyLookupRequest(
+        expect(fn () => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: '123456',
@@ -133,7 +133,7 @@ describe('VerifyLookupRequest', function () {
     });
 
     it('throws exception for token20 exceeding 100 characters', function () {
-        expect(fn() => new VerifyLookupRequest(
+        expect(fn () => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: '123456',
@@ -142,7 +142,7 @@ describe('VerifyLookupRequest', function () {
     });
 
     it('throws exception for token20 with more than 8 spaces', function () {
-        expect(fn() => new VerifyLookupRequest(
+        expect(fn () => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: '123456',
@@ -158,9 +158,9 @@ describe('VerifyLookupRequest', function () {
             token2: 'second',
             type: MessageTypeEnum::NORMAL
         );
-        
+
         $params = $request->toApiParams();
-        
+
         expect($params)->toBeArray();
         expect($params)->toHaveKey('receptor');
         expect($params)->toHaveKey('template');
@@ -176,9 +176,9 @@ describe('VerifyLookupRequest', function () {
             template: 'verify-template',
             token: '123456'
         );
-        
+
         $params = $request->toApiParams();
-        
+
         expect($params)->not->toHaveKey('token2');
         expect($params)->not->toHaveKey('token3');
         expect($params)->not->toHaveKey('token10');
