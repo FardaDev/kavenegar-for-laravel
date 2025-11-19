@@ -11,6 +11,7 @@ use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
 use FardaDev\Kavenegar\Facades\Kavenegar;
+use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
 use Illuminate\Support\Facades\Http;
 
@@ -196,11 +197,13 @@ describe('Send Array', function () {
             ]),
         ]);
 
-        $result = Kavenegar::sendArray(
+        $request = new SendArrayRequest(
             senders: ['10004346', '10004347'],
             receptors: ['09123456789', '09987654321'],
             messages: ['Message 1', 'Message 2']
         );
+        
+        $result = Kavenegar::sendArray($request);
 
         expect($result)->toHaveCount(2)
             ->and($result[0]->message)->toBe('Message 1')
@@ -212,11 +215,11 @@ describe('Send Array', function () {
     });
 
     it('throws exception for array length mismatch', function () {
-        expect(fn () => Kavenegar::sendArray(
+        expect(fn () => new SendArrayRequest(
             senders: ['10004346'],
             receptors: ['09123456789', '09987654321'],
             messages: ['Message 1', 'Message 2']
-        ))->toThrow(KavenegarValidationException::class, 'All arrays must have the same length');
+        ))->toThrow(KavenegarValidationException::class, 'تعداد عناصر آرایه‌ها باید برابر باشد');
     });
 });
 

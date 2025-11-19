@@ -8,12 +8,13 @@ use FardaDev\Kavenegar\Dto\AccountConfig;
 use FardaDev\Kavenegar\Dto\AccountInfo;
 use FardaDev\Kavenegar\Dto\MessageResponse;
 use FardaDev\Kavenegar\Dto\StatusResponse;
+use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
 use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static MessageResponse[] send(SendMessageRequest $request)
- * @method static MessageResponse[] sendArray(array<int, string> $senders, array<int, string> $receptors, array<int, string> $messages, ?int $date = null, ?array<int, int> $types = null, ?array<int, int> $localids = null, ?int $hide = null, ?string $tag = null, ?string $policy = null)
+ * @method static MessageResponse[] sendArray(SendArrayRequest $request)
  * @method static StatusResponse[] status(string|array<int, string> $messageid)
  * @method static StatusResponse[] statusLocalMessageId(string|array<int, string> $localid)
  * @method static StatusResponse[] statusByReceptor(string $receptor, int $startdate, ?int $enddate = null)

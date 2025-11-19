@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use FardaDev\Kavenegar\Client\KavenegarClient;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
 use Illuminate\Support\Facades\Http;
 
@@ -71,11 +72,11 @@ describe('Client Validation', function () {
         Http::fake();
 
         // Mismatched array lengths
-        expect(fn () => $client->sendArray(
+        expect(fn () => new SendArrayRequest(
             senders: ['10004346', '10004347'],
             receptors: ['09123456789'],
             messages: ['test1', 'test2']
-        ))->toThrow(KavenegarValidationException::class, 'All arrays must have the same length');
+        ))->toThrow(KavenegarValidationException::class, 'تعداد عناصر آرایه‌ها باید برابر باشد');
     });
 
     it('validates array lengths with optional parameters', function () {
@@ -84,11 +85,11 @@ describe('Client Validation', function () {
         Http::fake();
 
         // Types array length mismatch
-        expect(fn () => $client->sendArray(
+        expect(fn () => new SendArrayRequest(
             senders: ['10004346', '10004347'],
             receptors: ['09123456789', '09987654321'],
             messages: ['test1', 'test2'],
-            types: [1] // Only 1 type for 2 messages
+            types: [\FardaDev\Kavenegar\Enums\MessageTypeEnum::NORMAL] // Only 1 type for 2 messages
         ))->toThrow(KavenegarValidationException::class);
     });
 
@@ -123,11 +124,13 @@ describe('Client Validation', function () {
             ]),
         ]);
 
-        $result = $client->sendArray(
+        $request = new SendArrayRequest(
             senders: ['10004346', '10004347'],
             receptors: ['09123456789', '09987654321'],
             messages: ['test1', 'test2']
         );
+        
+        $result = $client->sendArray($request);
 
         expect($result)->toHaveCount(2);
     });

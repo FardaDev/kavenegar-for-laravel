@@ -11,6 +11,7 @@ use FardaDev\Kavenegar\Dto\StatusResponse;
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
@@ -196,68 +197,16 @@ class KavenegarClient
 
     /**
      * Send multiple different messages to different recipients from different senders.
-     * All arrays must have the same length. Uses POST method.
      *
-     * @param  array<int, string>  $senders  Array of sender line numbers
-     * @param  array<int, string>  $receptors  Array of recipient phone numbers
-     * @param  array<int, string>  $messages  Array of message texts
-     * @param  int|null  $date  Scheduled send time (UnixTime)
-     * @param  array<int, int>|null  $types  Array of message display types
-     * @param  array<int, int>|null  $localids  Array of local IDs for duplicate prevention
-     * @param  int|null  $hide  Hide receptors in logs (1 to hide)
-     * @param  string|null  $tag  Tag for categorization
-     * @param  string|null  $policy  Custom sending flow policy
      * @return MessageResponse[]
      *
      * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function sendArray(
-        array $senders,
-        array $receptors,
-        array $messages,
-        ?int $date = null,
-        ?array $types = null,
-        ?array $localids = null,
-        ?int $hide = null,
-        ?string $tag = null,
-        ?string $policy = null
-    ): array {
-        $this->validateArrayLengths($senders, $receptors, $messages);
-        $this->validateTag($tag);
-
-        $params = [
-            'sender' => $senders,
-            'receptor' => $receptors,
-            'message' => $messages,
-        ];
-
-        if ($date !== null) {
-            $params['date'] = $date;
-        }
-
-        if ($types !== null) {
-            $this->validateArrayLengths($senders, $types);
-            $params['type'] = $types;
-        }
-
-        if ($localids !== null) {
-            $this->validateArrayLengths($senders, $localids);
-            $params['localmessageids'] = $localids;
-        }
-
-        if ($hide !== null) {
-            $params['hide'] = $hide;
-        }
-
-        if ($tag !== null) {
-            $params['tag'] = $tag;
-        }
-
-        if ($policy !== null) {
-            $params['policy'] = $policy;
-        }
+    public function sendArray(SendArrayRequest $request): array
+    {
+        $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/sendarray');
         $entries = $this->executeRequest($url, $params, 'POST');
