@@ -9,7 +9,7 @@ use FardaDev\Kavenegar\Dto\MessageResponse;
 use FardaDev\Kavenegar\Dto\StatusResponse;
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Facades\Kavenegar;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
@@ -146,7 +146,7 @@ describe('Send SMS', function () {
                 message: 'Test'
             );
             Kavenegar::send($request);
-        })->toThrow(KavenegarValidationException::class);
+        })->toThrow(InputValidationException::class);
     });
 
     it('throws exception for insufficient credit', function () {
@@ -221,7 +221,7 @@ describe('Send Array', function () {
             senders: ['10004346'],
             receptors: ['09123456789', '09987654321'],
             messages: ['Message 1', 'Message 2']
-        ))->toThrow(KavenegarValidationException::class, 'تعداد عناصر آرایه‌ها باید برابر باشد');
+        ))->toThrow(InputValidationException::class, 'تعداد عناصر آرایه‌ها باید برابر باشد');
     });
 });
 
@@ -529,3 +529,4 @@ describe('Facade vs Direct Usage', function () {
         expect($result)->toBeArray()->toHaveCount(1);
     });
 });
+

@@ -11,9 +11,11 @@ use FardaDev\Kavenegar\Dto\StatusResponse;
 use FardaDev\Kavenegar\Requests\CancelRequest;
 use FardaDev\Kavenegar\Requests\CountOutboxRequest;
 use FardaDev\Kavenegar\Requests\LatestOutboxRequest;
+use FardaDev\Kavenegar\Requests\SelectOutboxRequest;
 use FardaDev\Kavenegar\Requests\SelectRequest;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
+use FardaDev\Kavenegar\Requests\StatusByReceptorRequest;
 use FardaDev\Kavenegar\Requests\StatusRequest;
 use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
 use Illuminate\Support\Facades\Facade;
@@ -23,9 +25,9 @@ use Illuminate\Support\Facades\Facade;
  * @method static MessageResponse[] sendArray(SendArrayRequest $request)
  * @method static StatusResponse[] status(StatusRequest $request)
  * @method static StatusResponse[] statusLocalMessageId(string|array<int, string> $localid)
- * @method static StatusResponse[] statusByReceptor(string $receptor, int $startdate, ?int $enddate = null)
+ * @method static StatusResponse[] statusByReceptor(StatusByReceptorRequest $request)
  * @method static MessageResponse[] select(SelectRequest $request)
- * @method static MessageResponse[] selectOutbox(int $startdate, ?int $enddate = null, ?string $sender = null)
+ * @method static MessageResponse[] selectOutbox(SelectOutboxRequest $request)
  * @method static MessageResponse[] latestOutbox(LatestOutboxRequest $request)
  * @method static int countOutbox(CountOutboxRequest $request)
  * @method static MessageResponse[] cancel(CancelRequest $request)

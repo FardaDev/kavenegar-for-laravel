@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace FardaDev\Kavenegar\Requests;
 
-use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
 use FardaDev\Kavenegar\Enums\MessageTypeEnum;
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Validation\Rules\IranianMobileNumber;
 use FardaDev\Kavenegar\Validation\Rules\KavenegarSenderLine;
 use FardaDev\Kavenegar\Validation\Rules\KavenegarTag;
@@ -59,24 +58,7 @@ final readonly class SendArrayRequest
         ]);
 
         if ($validator->fails()) {
-            // Map validation errors to appropriate error codes
-            $errors = $validator->errors();
-            $firstError = $errors->first();
-
-            $errorCode = match (true) {
-                $errors->has('senders') || $errors->has('senders.*') => ApiErrorCodeEnum::INVALID_SENDER->value,
-                $errors->has('receptors') || $errors->has('receptors.*') => ApiErrorCodeEnum::INVALID_RECEPTOR->value,
-                $errors->has('messages') || $errors->has('messages.*') => ApiErrorCodeEnum::INVALID_MESSAGE->value,
-                $errors->has('date') => ApiErrorCodeEnum::INVALID_DATE->value,
-                $errors->has('tag') => ApiErrorCodeEnum::INVALID_TAG->value,
-                default => ApiErrorCodeEnum::INCOMPLETE_PARAMS->value,
-            };
-
-            throw new KavenegarValidationException(
-                message: $firstError,
-                errorCode: $errorCode,
-                context: ['errors' => $errors->toArray()]
-            );
+            throw new InputValidationException($validator->errors());
         }
 
         // Validate array lengths match
@@ -101,10 +83,8 @@ final readonly class SendArrayRequest
         ];
 
         if (count(array_unique($lengths)) > 1) {
-            throw new KavenegarValidationException(
-                message: 'تعداد عناصر آرایه‌ها باید برابر باشد',
-                errorCode: ApiErrorCodeEnum::ARRAY_LENGTH_MISMATCH->value,
-                context: ['lengths' => $lengths]
+            throw new InputValidationException(
+                new \Illuminate\Support\MessageBag(['arrays' => ['تعداد عناصر آرایه‌ها باید برابر باشد']])
             );
         }
     }
@@ -112,9 +92,8 @@ final readonly class SendArrayRequest
     private function validateTypesArray(): void
     {
         if (count($this->types) !== count($this->senders)) {
-            throw new KavenegarValidationException(
-                message: 'تعداد عناصر آرایه types باید با سایر آرایه‌ها برابر باشد',
-                errorCode: ApiErrorCodeEnum::ARRAY_LENGTH_MISMATCH->value
+            throw new InputValidationException(
+                new \Illuminate\Support\MessageBag(['types' => ['تعداد عناصر آرایه types باید با سایر آرایه‌ها برابر باشد']])
             );
         }
     }
@@ -122,9 +101,8 @@ final readonly class SendArrayRequest
     private function validateLocalidsArray(): void
     {
         if (count($this->localids) !== count($this->senders)) {
-            throw new KavenegarValidationException(
-                message: 'تعداد عناصر آرایه localids باید با سایر آرایه‌ها برابر باشد',
-                errorCode: ApiErrorCodeEnum::ARRAY_LENGTH_MISMATCH->value
+            throw new InputValidationException(
+                new \Illuminate\Support\MessageBag(['localids' => ['تعداد عناصر آرایه localids باید با سایر آرایه‌ها برابر باشد']])
             );
         }
     }

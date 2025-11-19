@@ -1,7 +1,7 @@
 <?php declare(strict_types=1);
 
 use FardaDev\Kavenegar\Enums\MessageStatusEnum;
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Requests\CountOutboxRequest;
 
 it('creates request with required parameters', function () {
@@ -61,14 +61,14 @@ it('throws exception for enddate before startdate', function () {
         startdate: 1735776000,
         enddate: 1735689600
     );
-})->throws(KavenegarValidationException::class, 'تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد');
+})->throws(InputValidationException::class, 'تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد');
 
 it('throws exception for date range exceeding 1 day', function () {
     new CountOutboxRequest(
         startdate: 1735689600,
         enddate: 1735862400 // 2 days later
     );
-})->throws(KavenegarValidationException::class, 'بازه زمانی نمی‌تواند بیشتر از یک روز باشد');
+})->throws(InputValidationException::class, 'بازه زمانی نمی‌تواند بیشتر از یک روز باشد');
 
 it('accepts date range of exactly 1 day', function () {
     $request = new CountOutboxRequest(
@@ -99,3 +99,4 @@ it('accepts different message status enums', function () {
             ->and($request->toApiParams()['status'])->toBe($status->value);
     }
 });
+

@@ -5,7 +5,7 @@ declare(strict_types=1);
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 
 it('creates api exception with error code and context', function () {
     $exception = new KavenegarApiException(
@@ -36,17 +36,21 @@ it('creates http exception for network errors', function () {
 });
 
 it('creates validation exception for input errors', function () {
-    $exception = new KavenegarValidationException(
-        message: 'Array length mismatch',
-        errorCode: 419,
-        context: ['lengths' => [3, 2]]
-    );
+    $errors = new \Illuminate\Support\MessageBag([
+        'arrays' => ['Array length mismatch'],
+        'lengths' => ['Lengths do not match']
+    ]);
+    
+    $exception = new InputValidationException($errors);
 
     expect($exception)
-        ->toBeInstanceOf(KavenegarException::class)
-        ->and($exception->getMessage())->toBe('Array length mismatch')
-        ->and($exception->errorCode)->toBe(419)
-        ->and($exception->getContext())->toBe(['lengths' => [3, 2]]);
+        ->toBeInstanceOf(Exception::class)
+        ->and($exception->getMessage())->toBe("Array length mismatch\nLengths do not match")
+        ->and($exception->getErrors())->toBe($errors)
+        ->and($exception->getErrorsArray())->toBe([
+            'arrays' => ['Array length mismatch'],
+            'lengths' => ['Lengths do not match']
+        ]);
 });
 
 it('allows null context', function () {
@@ -68,3 +72,4 @@ it('preserves previous exception', function () {
 
     expect($exception->getPrevious())->toBe($previous);
 });
+

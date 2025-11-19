@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace FardaDev\Kavenegar\Requests;
 
-use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
 use FardaDev\Kavenegar\Enums\MessageTypeEnum;
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Validation\Rules\IranianMobileNumber;
 use FardaDev\Kavenegar\Validation\Rules\VerifyToken;
 use FardaDev\Kavenegar\Validation\Rules\VerifyToken10;
@@ -50,22 +49,7 @@ final readonly class VerifyLookupRequest
         ]);
 
         if ($validator->fails()) {
-            // Map validation errors to appropriate error codes
-            $errors = $validator->errors();
-            $firstError = $errors->first();
-
-            $errorCode = match (true) {
-                $errors->has('receptor') => ApiErrorCodeEnum::INVALID_RECEPTOR->value,
-                $errors->has('template') => ApiErrorCodeEnum::INCOMPLETE_PARAMS->value,
-                $errors->has('token') || $errors->has('token2') || $errors->has('token3') || $errors->has('token10') || $errors->has('token20') => ApiErrorCodeEnum::INCOMPLETE_PARAMS->value,
-                default => ApiErrorCodeEnum::INCOMPLETE_PARAMS->value,
-            };
-
-            throw new KavenegarValidationException(
-                message: $firstError,
-                errorCode: $errorCode,
-                context: ['errors' => $errors->toArray()]
-            );
+            throw new InputValidationException($validator->errors());
         }
     }
 

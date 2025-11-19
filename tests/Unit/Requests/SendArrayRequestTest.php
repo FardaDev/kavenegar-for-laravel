@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
 use FardaDev\Kavenegar\Enums\MessageTypeEnum;
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 
 describe('SendArrayRequest', function () {
@@ -43,7 +43,7 @@ describe('SendArrayRequest', function () {
             senders: [],
             receptors: ['09123456789'],
             messages: ['Test message']
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for missing receptors', function () {
@@ -51,7 +51,7 @@ describe('SendArrayRequest', function () {
             senders: ['10004346'],
             receptors: [],
             messages: ['Test message']
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for missing messages', function () {
@@ -59,7 +59,7 @@ describe('SendArrayRequest', function () {
             senders: ['10004346'],
             receptors: ['09123456789'],
             messages: []
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for array length mismatch', function () {
@@ -67,7 +67,7 @@ describe('SendArrayRequest', function () {
             senders: ['10004346', '10004347'],
             receptors: ['09123456789'],
             messages: ['Message 1', 'Message 2']
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception with ARRAY_LENGTH_MISMATCH error code', function () {
@@ -78,8 +78,9 @@ describe('SendArrayRequest', function () {
                 messages: ['Message 1', 'Message 2']
             );
             expect(false)->toBeTrue('Should have thrown exception');
-        } catch (KavenegarValidationException $e) {
-            expect($e->getCode())->toBe(ApiErrorCodeEnum::ARRAY_LENGTH_MISMATCH->value);
+        } catch (InputValidationException $e) {
+            expect($e->getErrors())->toBeInstanceOf(\Illuminate\Support\MessageBag::class)
+                ->and($e->getErrors()->has('arrays'))->toBeTrue();
         }
     });
 
@@ -92,7 +93,7 @@ describe('SendArrayRequest', function () {
             senders: $senders,
             receptors: $receptors,
             messages: $messages
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for invalid sender in array', function () {
@@ -100,7 +101,7 @@ describe('SendArrayRequest', function () {
             senders: ['10004346', 'invalid'],
             receptors: ['09123456789', '09987654321'],
             messages: ['Message 1', 'Message 2']
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for invalid receptor in array', function () {
@@ -108,7 +109,7 @@ describe('SendArrayRequest', function () {
             senders: ['10004346', '10004347'],
             receptors: ['09123456789', 'invalid'],
             messages: ['Message 1', 'Message 2']
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for message exceeding 900 characters', function () {
@@ -116,7 +117,7 @@ describe('SendArrayRequest', function () {
             senders: ['10004346', '10004347'],
             receptors: ['09123456789', '09987654321'],
             messages: ['Message 1', str_repeat('a', 901)]
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for past date', function () {
@@ -125,7 +126,7 @@ describe('SendArrayRequest', function () {
             receptors: ['09123456789'],
             messages: ['Message 1'],
             date: time() - 3600
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for invalid tag format', function () {
@@ -134,7 +135,7 @@ describe('SendArrayRequest', function () {
             receptors: ['09123456789'],
             messages: ['Message 1'],
             tag: 'invalid tag!'
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception when types array length does not match', function () {
@@ -143,7 +144,7 @@ describe('SendArrayRequest', function () {
             receptors: ['09123456789', '09987654321'],
             messages: ['Message 1', 'Message 2'],
             types: [MessageTypeEnum::NORMAL]
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception when localids array length does not match', function () {
@@ -152,7 +153,7 @@ describe('SendArrayRequest', function () {
             receptors: ['09123456789', '09987654321'],
             messages: ['Message 1', 'Message 2'],
             localids: [123]
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('converts to API parameters', function () {
@@ -188,3 +189,4 @@ describe('SendArrayRequest', function () {
         expect($params)->not->toHaveKey('localmessageids');
     });
 });
+

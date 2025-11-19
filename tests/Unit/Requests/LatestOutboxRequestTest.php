@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Requests\LatestOutboxRequest;
 
 describe('LatestOutboxRequest', function () {
@@ -37,7 +37,7 @@ describe('LatestOutboxRequest', function () {
 
     it('throws exception for pagesize exceeding 500', function () {
         expect(fn () => new LatestOutboxRequest(pagesize: 501))
-            ->toThrow(KavenegarValidationException::class);
+            ->toThrow(InputValidationException::class);
     });
 
     it('accepts pagesize of exactly 500', function () {
@@ -79,3 +79,4 @@ describe('LatestOutboxRequest', function () {
         expect($params['pagesize'])->toBe(500);
     });
 });
+

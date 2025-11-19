@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace FardaDev\Kavenegar\Requests;
 
-use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
 use FardaDev\Kavenegar\Enums\MessageTypeEnum;
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Validation\Rules\KavenegarSenderLine;
 use FardaDev\Kavenegar\Validation\Rules\KavenegarTag;
 use FardaDev\Kavenegar\Validation\Rules\UnixTimestamp;
@@ -52,23 +51,7 @@ final readonly class SendMessageRequest
         ]);
 
         if ($validator->fails()) {
-            // Map validation errors to appropriate error codes
-            $errors = $validator->errors();
-            $firstError = $errors->first();
-
-            $errorCode = match (true) {
-                $errors->has('message') => ApiErrorCodeEnum::INVALID_MESSAGE->value,
-                $errors->has('sender') => ApiErrorCodeEnum::INVALID_SENDER->value,
-                $errors->has('date') => ApiErrorCodeEnum::INVALID_DATE->value,
-                $errors->has('tag') => ApiErrorCodeEnum::INVALID_TAG->value,
-                default => ApiErrorCodeEnum::INCOMPLETE_PARAMS->value,
-            };
-
-            throw new KavenegarValidationException(
-                message: $firstError,
-                errorCode: $errorCode,
-                context: ['errors' => $errors->toArray()]
-            );
+            throw new InputValidationException($validator->errors());
         }
 
         // Custom validation for receptors (count and format)
@@ -80,18 +63,16 @@ final readonly class SendMessageRequest
         $receptors = is_array($this->receptor) ? $this->receptor : explode(',', $this->receptor);
 
         if (count($receptors) > 200) {
-            throw new KavenegarValidationException(
-                message: 'تعداد گیرندگان نباید بیشتر از 200 باشد',
-                errorCode: ApiErrorCodeEnum::TOO_MANY_RECORDS->value
+            throw new InputValidationException(
+                new \Illuminate\Support\MessageBag(['receptor' => ['تعداد گیرندگان نباید بیشتر از 200 باشد']])
             );
         }
 
         foreach ($receptors as $receptor) {
             $receptor = trim($receptor);
             if (! preg_match('/^09\d{9}$/', $receptor)) {
-                throw new KavenegarValidationException(
-                    message: "شماره موبایل {$receptor} نامعتبر است",
-                    errorCode: ApiErrorCodeEnum::INVALID_RECEPTOR->value
+                throw new InputValidationException(
+                    new \Illuminate\Support\MessageBag(['receptor' => ["شماره موبایل {$receptor} نامعتبر است"]])
                 );
             }
         }

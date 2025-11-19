@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
 use FardaDev\Kavenegar\Enums\MessageTypeEnum;
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
 
 describe('SendMessageRequest', function () {
@@ -50,21 +50,21 @@ describe('SendMessageRequest', function () {
         expect(fn () => new SendMessageRequest(
             receptor: 'invalid',
             message: 'Test message'
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for empty message', function () {
         expect(fn () => new SendMessageRequest(
             receptor: '09123456789',
             message: ''
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for message exceeding 900 characters', function () {
         expect(fn () => new SendMessageRequest(
             receptor: '09123456789',
             message: str_repeat('a', 901)
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for invalid sender format', function () {
@@ -72,7 +72,7 @@ describe('SendMessageRequest', function () {
             receptor: '09123456789',
             message: 'Test message',
             sender: 'invalid'
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for past date', function () {
@@ -80,7 +80,7 @@ describe('SendMessageRequest', function () {
             receptor: '09123456789',
             message: 'Test message',
             date: time() - 3600
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for invalid tag format', function () {
@@ -88,7 +88,7 @@ describe('SendMessageRequest', function () {
             receptor: '09123456789',
             message: 'Test message',
             tag: 'invalid tag!'
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for more than 200 receptors', function () {
@@ -97,7 +97,7 @@ describe('SendMessageRequest', function () {
         expect(fn () => new SendMessageRequest(
             receptor: $receptors,
             message: 'Test message'
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('converts to API parameters', function () {
@@ -142,15 +142,17 @@ describe('SendMessageRequest', function () {
         expect($params)->not->toHaveKey('type');
     });
 
-    it('throws exception with proper error code for invalid receptor', function () {
+    it('throws exception with validation errors for invalid receptor', function () {
         try {
             new SendMessageRequest(
                 receptor: 'invalid',
                 message: 'Test message'
             );
             expect(false)->toBeTrue('Should have thrown exception');
-        } catch (KavenegarValidationException $e) {
-            expect($e->getCode())->toBe(ApiErrorCodeEnum::INVALID_RECEPTOR->value);
+        } catch (InputValidationException $e) {
+            expect($e->getErrors())->toBeInstanceOf(\Illuminate\Support\MessageBag::class)
+                ->and($e->getErrors()->has('receptor'))->toBeTrue();
         }
     });
 });
+

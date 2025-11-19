@@ -14,9 +14,11 @@ use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
 use FardaDev\Kavenegar\Requests\CancelRequest;
 use FardaDev\Kavenegar\Requests\CountOutboxRequest;
 use FardaDev\Kavenegar\Requests\LatestOutboxRequest;
+use FardaDev\Kavenegar\Requests\SelectOutboxRequest;
 use FardaDev\Kavenegar\Requests\SelectRequest;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
+use FardaDev\Kavenegar\Requests\StatusByReceptorRequest;
 use FardaDev\Kavenegar\Requests\StatusRequest;
 use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
 use Illuminate\Http\Client\ConnectionException;
@@ -276,27 +278,15 @@ class KavenegarClient
      * Get list of messages sent to a specific receptor within a date range.
      * Maximum date range is 1 day.
      *
-     * @param  string  $receptor  Recipient phone number
-     * @param  int  $startdate  Start of date range (UnixTime)
-     * @param  int|null  $enddate  End of date range (UnixTime, defaults to +1 day)
      * @return StatusResponse[]
      *
+     * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function statusByReceptor(
-        string $receptor,
-        int $startdate,
-        ?int $enddate = null
-    ): array {
-        $params = [
-            'receptor' => $receptor,
-            'startdate' => $startdate,
-        ];
-
-        if ($enddate !== null) {
-            $params['enddate'] = $enddate;
-        }
+    public function statusByReceptor(StatusByReceptorRequest $request): array
+    {
+        $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/statusbyreceptor');
         $entries = $this->executeRequest($url, $params);
@@ -336,30 +326,15 @@ class KavenegarClient
      * Maximum date range is 1 day. Start date must be within last 3 days.
      * Returns up to 500 messages. Requires IP restriction configuration.
      *
-     * @param  int  $startdate  Start of date range (UnixTime)
-     * @param  int|null  $enddate  End of date range (UnixTime, defaults to now)
-     * @param  string|null  $sender  Filter by specific sender line
      * @return MessageResponse[]
      *
+     * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function selectOutbox(
-        int $startdate,
-        ?int $enddate = null,
-        ?string $sender = null
-    ): array {
-        $params = [
-            'startdate' => $startdate,
-        ];
-
-        if ($enddate !== null) {
-            $params['enddate'] = $enddate;
-        }
-
-        if ($sender !== null) {
-            $params['sender'] = $sender;
-        }
+    public function selectOutbox(SelectOutboxRequest $request): array
+    {
+        $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/selectoutbox');
         $entries = $this->executeRequest($url, $params);

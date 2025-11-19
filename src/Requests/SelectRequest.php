@@ -2,8 +2,7 @@
 
 namespace FardaDev\Kavenegar\Requests;
 
-use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use Illuminate\Support\Facades\Validator;
 
 readonly class SelectRequest
@@ -33,11 +32,7 @@ readonly class SelectRequest
         );
 
         if ($validator->fails()) {
-            throw new KavenegarValidationException(
-                message: implode("\n", $validator->errors()->all()),
-                errorCode: ApiErrorCodeEnum::INVALID_INPUT->value,
-                context: ['errors' => $validator->errors()->toArray()]
-            );
+            throw new InputValidationException($validator->errors());
         }
     }
 

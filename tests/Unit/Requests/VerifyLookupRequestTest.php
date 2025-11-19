@@ -2,9 +2,8 @@
 
 declare(strict_types=1);
 
-use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
 use FardaDev\Kavenegar\Enums\MessageTypeEnum;
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
 
 describe('VerifyLookupRequest', function () {
@@ -53,7 +52,7 @@ describe('VerifyLookupRequest', function () {
             receptor: 'invalid',
             template: 'verify-template',
             token: '123456'
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for empty template', function () {
@@ -61,7 +60,7 @@ describe('VerifyLookupRequest', function () {
             receptor: '09123456789',
             template: '',
             token: '123456'
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for template exceeding 100 characters', function () {
@@ -69,7 +68,7 @@ describe('VerifyLookupRequest', function () {
             receptor: '09123456789',
             template: str_repeat('a', 101),
             token: '123456'
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for empty token', function () {
@@ -77,7 +76,7 @@ describe('VerifyLookupRequest', function () {
             receptor: '09123456789',
             template: 'verify-template',
             token: ''
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for token exceeding 100 characters', function () {
@@ -85,7 +84,7 @@ describe('VerifyLookupRequest', function () {
             receptor: '09123456789',
             template: 'verify-template',
             token: str_repeat('a', 101)
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for token with spaces', function () {
@@ -93,7 +92,7 @@ describe('VerifyLookupRequest', function () {
             receptor: '09123456789',
             template: 'verify-template',
             token: 'کد تایید'
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for token2 exceeding 100 characters', function () {
@@ -102,7 +101,7 @@ describe('VerifyLookupRequest', function () {
             template: 'verify-template',
             token: '123456',
             token2: str_repeat('a', 101)
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for token3 exceeding 100 characters', function () {
@@ -111,7 +110,7 @@ describe('VerifyLookupRequest', function () {
             template: 'verify-template',
             token: '123456',
             token3: str_repeat('a', 101)
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for token10 exceeding 100 characters', function () {
@@ -120,7 +119,7 @@ describe('VerifyLookupRequest', function () {
             template: 'verify-template',
             token: '123456',
             token10: str_repeat('a', 101)
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for token10 with more than 5 spaces', function () {
@@ -129,7 +128,7 @@ describe('VerifyLookupRequest', function () {
             template: 'verify-template',
             token: '123456',
             token10: 'a b c d e f g'
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for token20 exceeding 100 characters', function () {
@@ -138,7 +137,7 @@ describe('VerifyLookupRequest', function () {
             template: 'verify-template',
             token: '123456',
             token20: str_repeat('a', 101)
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('throws exception for token20 with more than 8 spaces', function () {
@@ -147,7 +146,7 @@ describe('VerifyLookupRequest', function () {
             template: 'verify-template',
             token: '123456',
             token20: 'a b c d e f g h i j'
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('converts to API parameters', function () {
@@ -186,7 +185,7 @@ describe('VerifyLookupRequest', function () {
         expect($params)->not->toHaveKey('type');
     });
 
-    it('throws exception with proper error code for invalid receptor', function () {
+    it('throws exception with validation errors for invalid receptor', function () {
         try {
             new VerifyLookupRequest(
                 receptor: 'invalid',
@@ -194,8 +193,10 @@ describe('VerifyLookupRequest', function () {
                 token: '123456'
             );
             expect(false)->toBeTrue('Should have thrown exception');
-        } catch (KavenegarValidationException $e) {
-            expect($e->getCode())->toBe(ApiErrorCodeEnum::INVALID_RECEPTOR->value);
+        } catch (InputValidationException $e) {
+            expect($e->getErrors())->toBeInstanceOf(\Illuminate\Support\MessageBag::class)
+                ->and($e->getErrors()->has('receptor'))->toBeTrue();
         }
     });
 });
+

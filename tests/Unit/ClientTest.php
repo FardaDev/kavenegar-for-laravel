@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use FardaDev\Kavenegar\Client\KavenegarClient;
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
 use Illuminate\Support\Facades\Http;
@@ -18,7 +18,7 @@ describe('Client Validation', function () {
             receptor: '09123456789',
             message: 'test',
             tag: str_repeat('a', 201)
-        ))->toThrow(KavenegarValidationException::class, 'تگ tag نباید بیشتر از 200 کاراکتر باشد');
+        ))->toThrow(InputValidationException::class, 'تگ tag نباید بیشتر از 200 کاراکتر باشد');
     });
 
     it('validates tag format - rejects special characters', function () {
@@ -30,7 +30,7 @@ describe('Client Validation', function () {
             receptor: '09123456789',
             message: 'test',
             tag: 'invalid@tag!'
-        ))->toThrow(KavenegarValidationException::class, 'تگ tag فقط می‌تواند شامل حروف و اعداد انگلیسی، خط تیره و زیرخط باشد');
+        ))->toThrow(InputValidationException::class, 'تگ tag فقط می‌تواند شامل حروف و اعداد انگلیسی، خط تیره و زیرخط باشد');
     });
 
     it('validates tag format - accepts valid tags', function () {
@@ -62,7 +62,7 @@ describe('Client Validation', function () {
                 tag: $tag
             );
             
-            expect(fn () => $client->send($request))->not->toThrow(KavenegarValidationException::class);
+            expect(fn () => $client->send($request))->not->toThrow(InputValidationException::class);
         }
     });
 
@@ -76,7 +76,7 @@ describe('Client Validation', function () {
             senders: ['10004346', '10004347'],
             receptors: ['09123456789'],
             messages: ['test1', 'test2']
-        ))->toThrow(KavenegarValidationException::class, 'تعداد عناصر آرایه‌ها باید برابر باشد');
+        ))->toThrow(InputValidationException::class, 'تعداد عناصر آرایه‌ها باید برابر باشد');
     });
 
     it('validates array lengths with optional parameters', function () {
@@ -90,7 +90,7 @@ describe('Client Validation', function () {
             receptors: ['09123456789', '09987654321'],
             messages: ['test1', 'test2'],
             types: [\FardaDev\Kavenegar\Enums\MessageTypeEnum::NORMAL] // Only 1 type for 2 messages
-        ))->toThrow(KavenegarValidationException::class);
+        ))->toThrow(InputValidationException::class);
     });
 
     it('accepts matching array lengths', function () {
@@ -232,3 +232,4 @@ describe('Client Helper Methods', function () {
         expect($result)->toHaveCount(1);
     });
 });
+
