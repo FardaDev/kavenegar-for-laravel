@@ -13,6 +13,7 @@ use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
 use FardaDev\Kavenegar\Facades\Kavenegar;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
+use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
 use Illuminate\Support\Facades\Http;
 
 describe('Send SMS', function () {
@@ -300,11 +301,13 @@ describe('Verify Lookup', function () {
             ]),
         ]);
 
-        $result = Kavenegar::verifyLookup(
+        $request = new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'login-verify',
             token: '123456'
         );
+        
+        $result = Kavenegar::verifyLookup($request);
 
         expect($result)->toBeInstanceOf(MessageResponse::class)
             ->and($result->messageid)->toBe(123456);
@@ -333,13 +336,15 @@ describe('Verify Lookup', function () {
             ]),
         ]);
 
-        $result = Kavenegar::verifyLookup(
+        $request = new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'email-pass',
             token: '123456',
             token2: 'user@example.com',
             token3: 'extra-data'
         );
+        
+        $result = Kavenegar::verifyLookup($request);
 
         expect($result)->toBeInstanceOf(MessageResponse::class);
 

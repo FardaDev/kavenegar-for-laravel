@@ -6,6 +6,7 @@ namespace FardaDev\Kavenegar\Helpers;
 
 use FardaDev\Kavenegar\Client\KavenegarClient;
 use FardaDev\Kavenegar\Dto\MessageResponse;
+use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
 
 /**
  * Convenience helper for common Kavenegar operations.
@@ -38,11 +39,13 @@ class KavenegarHelper
 
         $template = config('kavenegar.templates.login');
 
-        return $this->client->verifyLookup(
+        $request = new VerifyLookupRequest(
             receptor: $receptor,
             template: $template,
             token: $this->normalizeToken($code)
         );
+
+        return $this->client->verifyLookup($request);
     }
 
     /**
@@ -64,12 +67,14 @@ class KavenegarHelper
 
         $template = config('kavenegar.templates.email_password');
 
-        return $this->client->verifyLookup(
+        $request = new VerifyLookupRequest(
             receptor: $receptor,
             template: $template,
             token: $this->normalizeToken($code),
             token2: $email
         );
+
+        return $this->client->verifyLookup($request);
     }
 
     /**
@@ -91,12 +96,14 @@ class KavenegarHelper
 
         $template = config('kavenegar.templates.two_factor');
 
-        return $this->client->verifyLookup(
+        $request = new VerifyLookupRequest(
             receptor: $receptor,
             template: $template,
             token: $this->normalizeToken($code),
             token2: $email
         );
+
+        return $this->client->verifyLookup($request);
     }
 
     /**

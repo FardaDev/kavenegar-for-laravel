@@ -10,6 +10,7 @@ use FardaDev\Kavenegar\Dto\MessageResponse;
 use FardaDev\Kavenegar\Dto\StatusResponse;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
+use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
 use Illuminate\Support\Facades\Facade;
 
 /**
@@ -23,7 +24,7 @@ use Illuminate\Support\Facades\Facade;
  * @method static MessageResponse[] latestOutbox(?int $pagesize = null, ?string $sender = null)
  * @method static int countOutbox(int $startdate, ?int $enddate = null, ?int $status = null)
  * @method static MessageResponse[] cancel(string|array<int, string> $messageid)
- * @method static MessageResponse verifyLookup(string $receptor, string $template, string $token, ?string $token2 = null, ?string $token3 = null, ?string $token10 = null, ?string $token20 = null, ?int $type = null)
+ * @method static MessageResponse verifyLookup(VerifyLookupRequest $request)
  * @method static MessageResponse[] makeTTS(string $receptor, string $message, ?int $date = null, ?array<int, int> $localid = null)
  * @method static AccountInfo info()
  * @method static AccountConfig config()

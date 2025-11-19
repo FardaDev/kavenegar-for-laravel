@@ -13,6 +13,7 @@ use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
+use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -463,56 +464,13 @@ class KavenegarClient
 
     /**
      * Send verification code using pre-defined template.
-     * Templates must be created in Kavenegar panel first.
-     * Supports up to 20 token parameters (token, token2, token3, ..., token20).
-     *
-     * @param  string  $receptor  Recipient phone number
-     * @param  string  $template  Template name from panel
-     * @param  string  $token  First token value
-     * @param  string|null  $token2  Second token value
-     * @param  string|null  $token3  Third token value
-     * @param  string|null  $token10  Tenth token value
-     * @param  string|null  $token20  Twentieth token value
-     * @param  int|null  $type  Message display type (0-3)
      *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function verifyLookup(
-        string $receptor,
-        string $template,
-        string $token,
-        ?string $token2 = null,
-        ?string $token3 = null,
-        ?string $token10 = null,
-        ?string $token20 = null,
-        ?int $type = null
-    ): MessageResponse {
-        $params = [
-            'receptor' => $receptor,
-            'template' => $template,
-            'token' => $token,
-        ];
-
-        if ($token2 !== null) {
-            $params['token2'] = $token2;
-        }
-
-        if ($token3 !== null) {
-            $params['token3'] = $token3;
-        }
-
-        if ($token10 !== null) {
-            $params['token10'] = $token10;
-        }
-
-        if ($token20 !== null) {
-            $params['token20'] = $token20;
-        }
-
-        if ($type !== null) {
-            $params['type'] = $type;
-        }
+    public function verifyLookup(VerifyLookupRequest $request): MessageResponse
+    {
+        $params = $request->toApiParams();
 
         $url = $this->buildUrl('verify/lookup');
         $entries = $this->executeRequest($url, $params);
