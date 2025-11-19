@@ -5,18 +5,20 @@ declare(strict_types=1);
 namespace FardaDev\Kavenegar\Dto;
 
 use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
+use FardaDev\Kavenegar\Enums\ApiLogsStateEnum;
+use FardaDev\Kavenegar\Enums\ConfigStateEnum;
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use Illuminate\Support\Facades\Validator;
 
 readonly class AccountConfig
 {
     public function __construct(
-        public string $apilogs,
-        public string $dailyreport,
-        public string $debugmode,
+        public ApiLogsStateEnum $apilogs,
+        public ConfigStateEnum $dailyreport,
+        public ConfigStateEnum $debugmode,
         public string $defaultsender,
         public int $mincreditalarm,
-        public string $resendfailed
+        public ConfigStateEnum $resendfailed
     ) {}
 
     /**
@@ -41,33 +43,47 @@ readonly class AccountConfig
             );
         }
 
+        // Convert string values to enums with proper error handling
+        try {
+            $apilogs = ApiLogsStateEnum::fromApiValue($data['apilogs']);
+            $dailyreport = ConfigStateEnum::fromApiValue($data['dailyreport']);
+            $debugmode = ConfigStateEnum::fromApiValue($data['debugmode']);
+            $resendfailed = ConfigStateEnum::fromApiValue($data['resendfailed']);
+        } catch (\ValueError $e) {
+            throw new KavenegarApiException(
+                message: "Invalid config state value received from API: {$e->getMessage()}",
+                errorCode: ApiErrorCodeEnum::OPERATION_FAILED->value,
+                context: ['data' => $data]
+            );
+        }
+
         return new self(
-            apilogs: (string) $data['apilogs'],
-            dailyreport: (string) $data['dailyreport'],
-            debugmode: (string) $data['debugmode'],
+            apilogs: $apilogs,
+            dailyreport: $dailyreport,
+            debugmode: $debugmode,
             defaultsender: (string) $data['defaultsender'],
             mincreditalarm: (int) $data['mincreditalarm'],
-            resendfailed: (string) $data['resendfailed']
+            resendfailed: $resendfailed
         );
     }
 
     public function hasApiLogsEnabled(): bool
     {
-        return $this->apilogs === 'enabled' || $this->apilogs === '1';
+        return $this->apilogs->isEnabled();
     }
 
     public function hasDailyReportEnabled(): bool
     {
-        return $this->dailyreport === 'enabled' || $this->dailyreport === '1';
+        return $this->dailyreport->isEnabled();
     }
 
     public function hasDebugModeEnabled(): bool
     {
-        return $this->debugmode === 'enabled' || $this->debugmode === '1';
+        return $this->debugmode->isEnabled();
     }
 
     public function hasResendFailedEnabled(): bool
     {
-        return $this->resendfailed === 'enabled' || $this->resendfailed === '1';
+        return $this->resendfailed->isEnabled();
     }
 }

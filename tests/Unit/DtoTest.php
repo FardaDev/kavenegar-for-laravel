@@ -244,12 +244,12 @@ describe('AccountConfig DTO', function () {
 
         $config = AccountConfig::fromArray($data);
 
-        expect($config->apilogs)->toBe('enabled')
-            ->and($config->dailyreport)->toBe('disabled')
-            ->and($config->debugmode)->toBe('1')
+        expect($config->apilogs)->toBe(\FardaDev\Kavenegar\Enums\ApiLogsStateEnum::ENABLED)
+            ->and($config->dailyreport)->toBe(\FardaDev\Kavenegar\Enums\ConfigStateEnum::DISABLED)
+            ->and($config->debugmode)->toBe(\FardaDev\Kavenegar\Enums\ConfigStateEnum::ENABLED)
             ->and($config->defaultsender)->toBe('10004346')
             ->and($config->mincreditalarm)->toBe(1000)
-            ->and($config->resendfailed)->toBe('enabled');
+            ->and($config->resendfailed)->toBe(\FardaDev\Kavenegar\Enums\ConfigStateEnum::ENABLED);
     });
 
     it('checks if api logs enabled', function () {
@@ -264,8 +264,8 @@ describe('AccountConfig DTO', function () {
 
         expect($enabled->hasApiLogsEnabled())->toBeTrue();
 
-        $enabledNumeric = AccountConfig::fromArray([
-            'apilogs' => '1',
+        $disabled = AccountConfig::fromArray([
+            'apilogs' => 'disabled',
             'dailyreport' => 'disabled',
             'debugmode' => '0',
             'defaultsender' => '10004346',
@@ -273,7 +273,7 @@ describe('AccountConfig DTO', function () {
             'resendfailed' => 'disabled',
         ]);
 
-        expect($enabledNumeric->hasApiLogsEnabled())->toBeTrue();
+        expect($disabled->hasApiLogsEnabled())->toBeFalse();
     });
 
     it('checks all boolean helpers', function () {
