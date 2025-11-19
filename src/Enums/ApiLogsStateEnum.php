@@ -4,19 +4,12 @@ declare(strict_types=1);
 
 namespace FardaDev\Kavenegar\Enums;
 
-/**
- * API logs configuration state enum.
- * Based on docs/api-endpoints.md - apilogs has three possible values.
- */
 enum ApiLogsStateEnum: string
 {
     case ENABLED = 'enabled';
     case DISABLED = 'disabled';
     case JUST_FAULTS = 'justfaults';
 
-    /**
-     * Create enum from API response value.
-     */
     public static function fromApiValue(string $value): self
     {
         $normalized = strtolower(trim($value));
