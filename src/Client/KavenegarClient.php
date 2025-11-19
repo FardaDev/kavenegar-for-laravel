@@ -11,7 +11,9 @@ use FardaDev\Kavenegar\Dto\StatusResponse;
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Requests\CancelRequest;
 use FardaDev\Kavenegar\Requests\LatestOutboxRequest;
+use FardaDev\Kavenegar\Requests\SelectRequest;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
 use FardaDev\Kavenegar\Requests\StatusRequest;
@@ -309,17 +311,15 @@ class KavenegarClient
      * Can retrieve up to 500 messages per request.
      * Requires IP restriction configuration in panel.
      *
-     * @param  string|array<int, string>  $messageid  Message ID(s) to retrieve
      * @return MessageResponse[]
      *
+     * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function select(string|array $messageid): array
+    public function select(SelectRequest $request): array
     {
-        $params = [
-            'messageid' => $this->toCommaSeparated($messageid),
-        ];
+        $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/select');
         $entries = $this->executeRequest($url, $params);
@@ -430,17 +430,15 @@ class KavenegarClient
      * Can only cancel messages in queue or scheduled status.
      * Can cancel up to 500 messages per request.
      *
-     * @param  string|array<int, string>  $messageid  Message ID(s) to cancel
      * @return MessageResponse[]
      *
+     * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function cancel(string|array $messageid): array
+    public function cancel(CancelRequest $request): array
     {
-        $params = [
-            'messageid' => $this->toCommaSeparated($messageid),
-        ];
+        $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/cancel');
         $entries = $this->executeRequest($url, $params);
