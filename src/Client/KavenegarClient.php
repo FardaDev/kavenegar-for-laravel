@@ -11,6 +11,7 @@ use FardaDev\Kavenegar\Dto\StatusResponse;
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Requests\LatestOutboxRequest;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
 use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
@@ -371,26 +372,15 @@ class KavenegarClient
 
     /**
      * Get the most recent sent messages.
-     * Returns up to 500 messages. Requires IP restriction configuration.
      *
-     * @param  int|null  $pagesize  Number of messages to retrieve (max 500)
-     * @param  string|null  $sender  Filter by specific sender line
      * @return MessageResponse[]
      *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function latestOutbox(?int $pagesize = null, ?string $sender = null): array
+    public function latestOutbox(LatestOutboxRequest $request): array
     {
-        $params = [];
-
-        if ($pagesize !== null) {
-            $params['pagesize'] = min($pagesize, 500);
-        }
-
-        if ($sender !== null) {
-            $params['sender'] = $sender;
-        }
+        $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/latestoutbox');
         $entries = $this->executeRequest($url, $params);

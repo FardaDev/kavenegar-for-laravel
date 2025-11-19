@@ -29,7 +29,7 @@ final readonly class LatestOutboxRequest
 
         if ($validator->fails()) {
             throw new KavenegarValidationException(
-                message: $validator->errors()->first(),
+                message: implode("\n", $validator->errors()->all()),
                 errorCode: ApiErrorCodeEnum::TOO_MANY_RECORDS->value,
                 context: ['errors' => $validator->errors()->toArray()]
             );

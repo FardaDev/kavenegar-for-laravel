@@ -1,0 +1,53 @@
+<?php declare(strict_types=1);
+
+namespace FardaDev\Kavenegar\Requests;
+
+use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
+use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use Illuminate\Support\Facades\Validator;
+
+readonly class StatusRequest
+{
+    /**
+     * @param  string|array<int, string>  $messageid
+     */
+    public function __construct(
+        public string|array $messageid
+    ) {
+        $this->validate();
+    }
+
+    private function validate(): void
+    {
+        $messageids = is_array($this->messageid) ? $this->messageid : explode(',', $this->messageid);
+
+        $validator = Validator::make(
+            ['messageids' => $messageids],
+            [
+                'messageids' => ['required', 'array', 'max:500'],
+                'messageids.*' => ['required', 'string'],
+            ],
+            [
+                'messageids.max' => 'تعداد شناسه پیام‌ها نمی‌تواند بیشتر از 500 باشد',
+            ]
+        );
+
+        if ($validator->fails()) {
+            throw new KavenegarValidationException(
+                message: implode("\n", $validator->errors()->all()),
+                errorCode: ApiErrorCodeEnum::INVALID_INPUT->value,
+                context: ['errors' => $validator->errors()->toArray()]
+            );
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function toApiParams(): array
+    {
+        return [
+            'messageid' => is_array($this->messageid) ? implode(',', $this->messageid) : $this->messageid,
+        ];
+    }
+}
