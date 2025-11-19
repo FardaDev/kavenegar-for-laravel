@@ -14,6 +14,7 @@ use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
 use FardaDev\Kavenegar\Requests\LatestOutboxRequest;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
+use FardaDev\Kavenegar\Requests\StatusRequest;
 use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
@@ -224,17 +225,15 @@ class KavenegarClient
      * Can check up to 500 messages per request.
      * Only works for messages sent within last 48 hours.
      *
-     * @param  string|array<int, string>  $messageid  Message ID(s) to check
      * @return StatusResponse[]
      *
+     * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function status(string|array $messageid): array
+    public function status(StatusRequest $request): array
     {
-        $params = [
-            'messageid' => $this->toCommaSeparated($messageid),
-        ];
+        $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/status');
         $entries = $this->executeRequest($url, $params);

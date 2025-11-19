@@ -11,13 +11,14 @@ use FardaDev\Kavenegar\Dto\StatusResponse;
 use FardaDev\Kavenegar\Requests\LatestOutboxRequest;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
+use FardaDev\Kavenegar\Requests\StatusRequest;
 use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
 use Illuminate\Support\Facades\Facade;
 
 /**
  * @method static MessageResponse[] send(SendMessageRequest $request)
  * @method static MessageResponse[] sendArray(SendArrayRequest $request)
- * @method static StatusResponse[] status(string|array<int, string> $messageid)
+ * @method static StatusResponse[] status(StatusRequest $request)
  * @method static StatusResponse[] statusLocalMessageId(string|array<int, string> $localid)
  * @method static StatusResponse[] statusByReceptor(string $receptor, int $startdate, ?int $enddate = null)
  * @method static MessageResponse[] select(string|array<int, string> $messageid)

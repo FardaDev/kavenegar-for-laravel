@@ -13,6 +13,7 @@ use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
 use FardaDev\Kavenegar\Facades\Kavenegar;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
+use FardaDev\Kavenegar\Requests\StatusRequest;
 use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
 use Illuminate\Support\Facades\Http;
 
@@ -237,7 +238,7 @@ describe('Status Checking', function () {
             ]),
         ]);
 
-        $result = Kavenegar::status('123456');
+        $result = Kavenegar::status(new StatusRequest('123456'));
 
         expect($result)->toBeArray()
             ->toHaveCount(1)
@@ -258,7 +259,7 @@ describe('Status Checking', function () {
             ]),
         ]);
 
-        $result = Kavenegar::status(['123', '124']);
+        $result = Kavenegar::status(new StatusRequest(['123', '124']));
 
         expect($result)->toHaveCount(2)
             ->and($result[0]->isDelivered())->toBeTrue()
@@ -277,7 +278,7 @@ describe('Status Checking', function () {
             ]),
         ]);
 
-        $result = Kavenegar::status('123456');
+        $result = Kavenegar::status(new StatusRequest('123456'));
 
         expect($result[0]->status->value)->toBe(100);
     });
