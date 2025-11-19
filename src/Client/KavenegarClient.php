@@ -10,7 +10,7 @@ use FardaDev\Kavenegar\Dto\MessageResponse;
 use FardaDev\Kavenegar\Dto\StatusResponse;
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
-use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Requests\CancelRequest;
 use FardaDev\Kavenegar\Requests\CountOutboxRequest;
 use FardaDev\Kavenegar\Requests\LatestOutboxRequest;
@@ -23,6 +23,7 @@ use FardaDev\Kavenegar\Requests\StatusRequest;
 use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
 class KavenegarClient
@@ -180,13 +181,13 @@ class KavenegarClient
     /**
      * Send SMS to one or more recipients.
      *
-     * @return array<int, MessageResponse>
+     * @return Collection<int, MessageResponse>
      *
-     * @throws KavenegarValidationException
+     * @throws InputValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function send(SendMessageRequest $request): array
+    public function send(SendMessageRequest $request): Collection
     {
         $params = $request->toApiParams();
 
@@ -197,31 +198,29 @@ class KavenegarClient
         $url = $this->buildUrl('sms/send');
         $entries = $this->executeRequest($url, $params);
 
-        return array_map(
-            fn (array $entry) => MessageResponse::fromArray($entry),
-            $entries
+        return collect($entries)->map(
+            fn (array $entry) => MessageResponse::fromArray($entry)
         );
     }
 
     /**
      * Send multiple different messages to different recipients from different senders.
      *
-     * @return MessageResponse[]
+     * @return Collection<int, MessageResponse>
      *
      * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function sendArray(SendArrayRequest $request): array
+    public function sendArray(SendArrayRequest $request): Collection
     {
         $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/sendarray');
         $entries = $this->executeRequest($url, $params, 'POST');
 
-        return array_map(
-            fn (array $entry) => MessageResponse::fromArray($entry),
-            $entries
+        return collect($entries)->map(
+            fn (array $entry) => MessageResponse::fromArray($entry)
         );
     }
 
@@ -230,22 +229,21 @@ class KavenegarClient
      * Can check up to 500 messages per request.
      * Only works for messages sent within last 48 hours.
      *
-     * @return StatusResponse[]
+     * @return Collection<int, StatusResponse>
      *
      * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function status(StatusRequest $request): array
+    public function status(StatusRequest $request): Collection
     {
         $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/status');
         $entries = $this->executeRequest($url, $params);
 
-        return array_map(
-            fn (array $entry) => StatusResponse::fromArray($entry),
-            $entries
+        return collect($entries)->map(
+            fn (array $entry) => StatusResponse::fromArray($entry)
         );
     }
 
@@ -254,12 +252,12 @@ class KavenegarClient
      * Only works for messages sent within last 12 hours.
      *
      * @param  string|array<int, string>  $localid  Local ID(s) to check
-     * @return StatusResponse[]
+     * @return Collection<int, StatusResponse>
      *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function statusLocalMessageId(string|array $localid): array
+    public function statusLocalMessageId(string|array $localid): Collection
     {
         $params = [
             'localid' => $this->toCommaSeparated($localid),
@@ -268,9 +266,8 @@ class KavenegarClient
         $url = $this->buildUrl('sms/statuslocalmessageid');
         $entries = $this->executeRequest($url, $params);
 
-        return array_map(
-            fn (array $entry) => StatusResponse::fromArray($entry),
-            $entries
+        return collect($entries)->map(
+            fn (array $entry) => StatusResponse::fromArray($entry)
         );
     }
 
@@ -278,22 +275,21 @@ class KavenegarClient
      * Get list of messages sent to a specific receptor within a date range.
      * Maximum date range is 1 day.
      *
-     * @return StatusResponse[]
+     * @return Collection<int, StatusResponse>
      *
      * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function statusByReceptor(StatusByReceptorRequest $request): array
+    public function statusByReceptor(StatusByReceptorRequest $request): Collection
     {
         $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/statusbyreceptor');
         $entries = $this->executeRequest($url, $params);
 
-        return array_map(
-            fn (array $entry) => StatusResponse::fromArray($entry),
-            $entries
+        return collect($entries)->map(
+            fn (array $entry) => StatusResponse::fromArray($entry)
         );
     }
 
@@ -302,22 +298,21 @@ class KavenegarClient
      * Can retrieve up to 500 messages per request.
      * Requires IP restriction configuration in panel.
      *
-     * @return MessageResponse[]
+     * @return Collection<int, MessageResponse>
      *
      * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function select(SelectRequest $request): array
+    public function select(SelectRequest $request): Collection
     {
         $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/select');
         $entries = $this->executeRequest($url, $params);
 
-        return array_map(
-            fn (array $entry) => MessageResponse::fromArray($entry),
-            $entries
+        return collect($entries)->map(
+            fn (array $entry) => MessageResponse::fromArray($entry)
         );
     }
 
@@ -326,43 +321,41 @@ class KavenegarClient
      * Maximum date range is 1 day. Start date must be within last 3 days.
      * Returns up to 500 messages. Requires IP restriction configuration.
      *
-     * @return MessageResponse[]
+     * @return Collection<int, MessageResponse>
      *
      * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function selectOutbox(SelectOutboxRequest $request): array
+    public function selectOutbox(SelectOutboxRequest $request): Collection
     {
         $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/selectoutbox');
         $entries = $this->executeRequest($url, $params);
 
-        return array_map(
-            fn (array $entry) => MessageResponse::fromArray($entry),
-            $entries
+        return collect($entries)->map(
+            fn (array $entry) => MessageResponse::fromArray($entry)
         );
     }
 
     /**
      * Get the most recent sent messages.
      *
-     * @return MessageResponse[]
+     * @return Collection<int, MessageResponse>
      *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function latestOutbox(LatestOutboxRequest $request): array
+    public function latestOutbox(LatestOutboxRequest $request): Collection
     {
         $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/latestoutbox');
         $entries = $this->executeRequest($url, $params);
 
-        return array_map(
-            fn (array $entry) => MessageResponse::fromArray($entry),
-            $entries
+        return collect($entries)->map(
+            fn (array $entry) => MessageResponse::fromArray($entry)
         );
     }
 
@@ -391,22 +384,21 @@ class KavenegarClient
      * Can only cancel messages in queue or scheduled status.
      * Can cancel up to 500 messages per request.
      *
-     * @return MessageResponse[]
+     * @return Collection<int, MessageResponse>
      *
      * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
-    public function cancel(CancelRequest $request): array
+    public function cancel(CancelRequest $request): Collection
     {
         $params = $request->toApiParams();
 
         $url = $this->buildUrl('sms/cancel');
         $entries = $this->executeRequest($url, $params);
 
-        return array_map(
-            fn (array $entry) => MessageResponse::fromArray($entry),
-            $entries
+        return collect($entries)->map(
+            fn (array $entry) => MessageResponse::fromArray($entry)
         );
     }
 
@@ -434,7 +426,7 @@ class KavenegarClient
      * @param  string  $message  Message text to convert to speech
      * @param  int|null  $date  Scheduled call time (UnixTime)
      * @param  array<int, int>|null  $localid  Local IDs for duplicate prevention
-     * @return MessageResponse[]
+     * @return Collection<int, MessageResponse>
      *
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
@@ -444,7 +436,7 @@ class KavenegarClient
         string $message,
         ?int $date = null,
         ?array $localid = null
-    ): array {
+    ): Collection {
         $params = [
             'receptor' => $receptor,
             'message' => $message,
@@ -461,9 +453,8 @@ class KavenegarClient
         $url = $this->buildUrl('call/maketts');
         $entries = $this->executeRequest($url, $params);
 
-        return array_map(
-            fn (array $entry) => MessageResponse::fromArray($entry),
-            $entries
+        return collect($entries)->map(
+            fn (array $entry) => MessageResponse::fromArray($entry)
         );
     }
 

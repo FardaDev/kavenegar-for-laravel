@@ -18,21 +18,22 @@ use FardaDev\Kavenegar\Requests\SendMessageRequest;
 use FardaDev\Kavenegar\Requests\StatusByReceptorRequest;
 use FardaDev\Kavenegar\Requests\StatusRequest;
 use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static MessageResponse[] send(SendMessageRequest $request)
- * @method static MessageResponse[] sendArray(SendArrayRequest $request)
- * @method static StatusResponse[] status(StatusRequest $request)
- * @method static StatusResponse[] statusLocalMessageId(string|array<int, string> $localid)
- * @method static StatusResponse[] statusByReceptor(StatusByReceptorRequest $request)
- * @method static MessageResponse[] select(SelectRequest $request)
- * @method static MessageResponse[] selectOutbox(SelectOutboxRequest $request)
- * @method static MessageResponse[] latestOutbox(LatestOutboxRequest $request)
+ * @method static Collection<int, MessageResponse> send(SendMessageRequest $request)
+ * @method static Collection<int, MessageResponse> sendArray(SendArrayRequest $request)
+ * @method static Collection<int, StatusResponse> status(StatusRequest $request)
+ * @method static Collection<int, StatusResponse> statusLocalMessageId(string|array<int, string> $localid)
+ * @method static Collection<int, StatusResponse> statusByReceptor(StatusByReceptorRequest $request)
+ * @method static Collection<int, MessageResponse> select(SelectRequest $request)
+ * @method static Collection<int, MessageResponse> selectOutbox(SelectOutboxRequest $request)
+ * @method static Collection<int, MessageResponse> latestOutbox(LatestOutboxRequest $request)
  * @method static int countOutbox(CountOutboxRequest $request)
- * @method static MessageResponse[] cancel(CancelRequest $request)
+ * @method static Collection<int, MessageResponse> cancel(CancelRequest $request)
  * @method static MessageResponse verifyLookup(VerifyLookupRequest $request)
- * @method static MessageResponse[] makeTTS(string $receptor, string $message, ?int $date = null, ?array<int, int> $localid = null)
+ * @method static Collection<int, MessageResponse> makeTTS(string $receptor, string $message, ?int $date = null, ?array<int, int> $localid = null)
  * @method static AccountInfo info()
  * @method static AccountConfig config()
  *

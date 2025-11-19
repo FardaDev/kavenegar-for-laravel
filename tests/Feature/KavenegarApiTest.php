@@ -15,6 +15,7 @@ use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
 use FardaDev\Kavenegar\Requests\StatusRequest;
 use FardaDev\Kavenegar\Requests\VerifyLookupRequest;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Http;
 
 describe('Send SMS', function () {
@@ -42,7 +43,7 @@ describe('Send SMS', function () {
         
         $result = Kavenegar::send($request);
 
-        expect($result)->toBeArray()
+        expect($result)->toBeInstanceOf(Collection::class)
             ->toHaveCount(1)
             ->and($result[0])->toBeInstanceOf(MessageResponse::class)
             ->and($result[0]->messageid)->toBe(123456)
@@ -240,7 +241,7 @@ describe('Status Checking', function () {
 
         $result = Kavenegar::status(new StatusRequest('123456'));
 
-        expect($result)->toBeArray()
+        expect($result)->toBeInstanceOf(Collection::class)
             ->toHaveCount(1)
             ->and($result[0])->toBeInstanceOf(StatusResponse::class)
             ->and($result[0]->messageid)->toBe(123456)
@@ -498,7 +499,7 @@ describe('Facade vs Direct Usage', function () {
         
         $result = Kavenegar::send($request);
 
-        expect($result)->toBeArray()->toHaveCount(1);
+        expect($result)->toBeInstanceOf(Collection::class)->toHaveCount(1);
     });
 
     it('works with dependency injection', function () {
@@ -526,7 +527,7 @@ describe('Facade vs Direct Usage', function () {
         
         $result = $client->send($request);
 
-        expect($result)->toBeArray()->toHaveCount(1);
+        expect($result)->toBeInstanceOf(Collection::class)->toHaveCount(1);
     });
 });
 
