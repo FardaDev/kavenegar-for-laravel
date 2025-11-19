@@ -104,7 +104,7 @@ describe('Send SMS', function () {
             policy: 'high-priority'
         );
 
-        expect($result[0]->status)->toBe(2);
+        expect($result[0]->status->value)->toBe(2);
 
         Http::assertSent(function ($request) {
             $url = $request->url();
@@ -216,7 +216,7 @@ describe('Status Checking', function () {
             ->toHaveCount(1)
             ->and($result[0])->toBeInstanceOf(StatusResponse::class)
             ->and($result[0]->messageid)->toBe(123456)
-            ->and($result[0]->status)->toBe(10)
+            ->and($result[0]->status->value)->toBe(10)
             ->and($result[0]->isDelivered())->toBeTrue();
     });
 
@@ -252,7 +252,7 @@ describe('Status Checking', function () {
 
         $result = Kavenegar::status('123456');
 
-        expect($result[0]->status)->toBe(100);
+        expect($result[0]->status->value)->toBe(100);
     });
 });
 

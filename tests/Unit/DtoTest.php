@@ -6,6 +6,7 @@ use FardaDev\Kavenegar\Dto\AccountConfig;
 use FardaDev\Kavenegar\Dto\AccountInfo;
 use FardaDev\Kavenegar\Dto\MessageResponse;
 use FardaDev\Kavenegar\Dto\StatusResponse;
+use FardaDev\Kavenegar\Enums\MessageStatusEnum;
 
 describe('MessageResponse DTO', function () {
     it('creates from array', function () {
@@ -24,7 +25,9 @@ describe('MessageResponse DTO', function () {
 
         expect($response->messageid)->toBe(123456)
             ->and($response->message)->toBe('Test message')
-            ->and($response->status)->toBe(10)
+            ->and($response->status)->toBeInstanceOf(MessageStatusEnum::class)
+            ->and($response->status)->toBe(MessageStatusEnum::DELIVERED)
+            ->and($response->status->value)->toBe(10)
             ->and($response->statustext)->toBe('رسیده به گیرنده')
             ->and($response->sender)->toBe('10004346')
             ->and($response->receptor)->toBe('09123456789')
@@ -119,7 +122,9 @@ describe('StatusResponse DTO', function () {
         $response = StatusResponse::fromArray($data);
 
         expect($response->messageid)->toBe(123456)
-            ->and($response->status)->toBe(10)
+            ->and($response->status)->toBeInstanceOf(MessageStatusEnum::class)
+            ->and($response->status)->toBe(MessageStatusEnum::DELIVERED)
+            ->and($response->status->value)->toBe(10)
             ->and($response->statustext)->toBe('رسیده به گیرنده');
     });
 
