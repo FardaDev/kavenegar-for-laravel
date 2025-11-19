@@ -36,25 +36,16 @@ readonly class MessageResponse
         );
     }
 
-    /**
-     * Check if message was successfully delivered to recipient.
-     */
     public function isDelivered(): bool
     {
         return $this->status->isDelivered();
     }
 
-    /**
-     * Check if message failed to deliver.
-     */
     public function isFailed(): bool
     {
         return $this->status->isFailed();
     }
 
-    /**
-     * Check if message is pending (in queue or sent to operator).
-     */
     public function isPending(): bool
     {
         return $this->status->isPending();
