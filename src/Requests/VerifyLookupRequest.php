@@ -8,6 +8,9 @@ use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
 use FardaDev\Kavenegar\Enums\MessageTypeEnum;
 use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
 use FardaDev\Kavenegar\Validation\Rules\IranianMobileNumber;
+use FardaDev\Kavenegar\Validation\Rules\VerifyToken;
+use FardaDev\Kavenegar\Validation\Rules\VerifyToken10;
+use FardaDev\Kavenegar\Validation\Rules\VerifyToken20;
 use Illuminate\Support\Facades\Validator;
 
 final readonly class VerifyLookupRequest
@@ -39,11 +42,11 @@ final readonly class VerifyLookupRequest
         ], [
             'receptor' => ['required', 'string', new IranianMobileNumber],
             'template' => ['required', 'string', 'max:100'],
-            'token' => ['required', 'string', 'max:200'],
-            'token2' => ['nullable', 'string', 'max:200'],
-            'token3' => ['nullable', 'string', 'max:200'],
-            'token10' => ['nullable', 'string', 'max:200'],
-            'token20' => ['nullable', 'string', 'max:200'],
+            'token' => ['required', 'string', new VerifyToken],
+            'token2' => ['nullable', 'string', new VerifyToken],
+            'token3' => ['nullable', 'string', new VerifyToken],
+            'token10' => ['nullable', 'string', new VerifyToken10],
+            'token20' => ['nullable', 'string', new VerifyToken20],
         ]);
 
         if ($validator->fails()) {

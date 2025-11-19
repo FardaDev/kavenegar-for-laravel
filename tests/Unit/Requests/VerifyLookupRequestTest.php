@@ -80,47 +80,73 @@ describe('VerifyLookupRequest', function () {
         ))->toThrow(KavenegarValidationException::class);
     });
 
-    it('throws exception for token exceeding 200 characters', function () {
+    it('throws exception for token exceeding 100 characters', function () {
         expect(fn() => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
-            token: str_repeat('a', 201)
+            token: str_repeat('a', 101)
         ))->toThrow(KavenegarValidationException::class);
     });
 
-    it('throws exception for token2 exceeding 200 characters', function () {
+    it('throws exception for token with spaces', function () {
+        expect(fn() => new VerifyLookupRequest(
+            receptor: '09123456789',
+            template: 'verify-template',
+            token: 'کد تایید'
+        ))->toThrow(KavenegarValidationException::class);
+    });
+
+    it('throws exception for token2 exceeding 100 characters', function () {
         expect(fn() => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: '123456',
-            token2: str_repeat('a', 201)
+            token2: str_repeat('a', 101)
         ))->toThrow(KavenegarValidationException::class);
     });
 
-    it('throws exception for token3 exceeding 200 characters', function () {
+    it('throws exception for token3 exceeding 100 characters', function () {
         expect(fn() => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: '123456',
-            token3: str_repeat('a', 201)
+            token3: str_repeat('a', 101)
         ))->toThrow(KavenegarValidationException::class);
     });
 
-    it('throws exception for token10 exceeding 200 characters', function () {
+    it('throws exception for token10 exceeding 100 characters', function () {
         expect(fn() => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: '123456',
-            token10: str_repeat('a', 201)
+            token10: str_repeat('a', 101)
         ))->toThrow(KavenegarValidationException::class);
     });
 
-    it('throws exception for token20 exceeding 200 characters', function () {
+    it('throws exception for token10 with more than 5 spaces', function () {
         expect(fn() => new VerifyLookupRequest(
             receptor: '09123456789',
             template: 'verify-template',
             token: '123456',
-            token20: str_repeat('a', 201)
+            token10: 'a b c d e f g'
+        ))->toThrow(KavenegarValidationException::class);
+    });
+
+    it('throws exception for token20 exceeding 100 characters', function () {
+        expect(fn() => new VerifyLookupRequest(
+            receptor: '09123456789',
+            template: 'verify-template',
+            token: '123456',
+            token20: str_repeat('a', 101)
+        ))->toThrow(KavenegarValidationException::class);
+    });
+
+    it('throws exception for token20 with more than 8 spaces', function () {
+        expect(fn() => new VerifyLookupRequest(
+            receptor: '09123456789',
+            template: 'verify-template',
+            token: '123456',
+            token20: 'a b c d e f g h i j'
         ))->toThrow(KavenegarValidationException::class);
     });
 
