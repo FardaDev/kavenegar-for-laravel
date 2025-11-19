@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace FardaDev\Kavenegar\Dto;
 
+use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
+use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
+use Illuminate\Support\Facades\Validator;
+
 readonly class AccountConfig
 {
     public function __construct(
@@ -20,6 +24,23 @@ readonly class AccountConfig
      */
     public static function fromArray(array $data): self
     {
+        $validator = Validator::make($data, [
+            'apilogs' => ['required', 'string'],
+            'dailyreport' => ['required', 'string'],
+            'debugmode' => ['required', 'string'],
+            'defaultsender' => ['required', 'string'],
+            'mincreditalarm' => ['required', 'integer', 'min:0'],
+            'resendfailed' => ['required', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            throw new KavenegarApiException(
+                message: 'Invalid API response structure: '.$validator->errors()->first(),
+                errorCode: ApiErrorCodeEnum::OPERATION_FAILED->value,
+                context: ['errors' => $validator->errors()->toArray(), 'data' => $data]
+            );
+        }
+
         return new self(
             apilogs: (string) $data['apilogs'],
             dailyreport: (string) $data['dailyreport'],
@@ -30,33 +51,21 @@ readonly class AccountConfig
         );
     }
 
-    /**
-     * Check if API logs are enabled.
-     */
     public function hasApiLogsEnabled(): bool
     {
         return $this->apilogs === 'enabled' || $this->apilogs === '1';
     }
 
-    /**
-     * Check if daily report is enabled.
-     */
     public function hasDailyReportEnabled(): bool
     {
         return $this->dailyreport === 'enabled' || $this->dailyreport === '1';
     }
 
-    /**
-     * Check if debug mode is enabled.
-     */
     public function hasDebugModeEnabled(): bool
     {
         return $this->debugmode === 'enabled' || $this->debugmode === '1';
     }
 
-    /**
-     * Check if resend failed messages is enabled.
-     */
     public function hasResendFailedEnabled(): bool
     {
         return $this->resendfailed === 'enabled' || $this->resendfailed === '1';

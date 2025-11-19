@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace FardaDev\Kavenegar\Dto;
 
+use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
+use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
+use Illuminate\Support\Facades\Validator;
+
 readonly class AccountInfo
 {
     public function __construct(
@@ -17,6 +21,20 @@ readonly class AccountInfo
      */
     public static function fromArray(array $data): self
     {
+        $validator = Validator::make($data, [
+            'remaincredit' => ['required', 'integer', 'min:0'],
+            'expiredate' => ['required', 'integer'],
+            'type' => ['required', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            throw new KavenegarApiException(
+                message: 'Invalid API response structure: '.$validator->errors()->first(),
+                errorCode: ApiErrorCodeEnum::OPERATION_FAILED->value,
+                context: ['errors' => $validator->errors()->toArray(), 'data' => $data]
+            );
+        }
+
         return new self(
             remaincredit: (int) $data['remaincredit'],
             expiredate: (int) $data['expiredate'],
@@ -24,34 +42,21 @@ readonly class AccountInfo
         );
     }
 
-    /**
-     * Check if account has remaining credit.
-     */
     public function hasCredit(): bool
     {
         return $this->remaincredit > 0;
     }
 
-    /**
-     * Check if account is expired.
-     * Compares expiredate (UnixTime) with current time.
-     */
     public function isExpired(): bool
     {
         return $this->expiredate < time();
     }
 
-    /**
-     * Get remaining credit in Rials.
-     */
     public function getCreditAmount(): int
     {
         return $this->remaincredit;
     }
 
-    /**
-     * Get expiry date as DateTime object.
-     */
     public function getExpiryDate(): \DateTime
     {
         $date = new \DateTime;
