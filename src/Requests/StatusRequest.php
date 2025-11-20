@@ -7,7 +7,7 @@ namespace FardaDev\Kavenegar\Requests;
 use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use Illuminate\Support\Facades\Validator;
 
-readonly class StatusRequest
+final readonly class StatusRequest
 {
     /**
      * @param  string|array<int, string>  $messageid

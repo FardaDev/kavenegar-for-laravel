@@ -9,7 +9,7 @@ use FardaDev\Kavenegar\Validation\Rules\KavenegarSenderLine;
 use FardaDev\Kavenegar\Validation\Rules\UnixTimestamp;
 use Illuminate\Support\Facades\Validator;
 
-readonly class SelectOutboxRequest
+final readonly class SelectOutboxRequest
 {
     public function __construct(
         public int $startdate,

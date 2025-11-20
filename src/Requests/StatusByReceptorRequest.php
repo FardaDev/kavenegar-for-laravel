@@ -9,7 +9,7 @@ use FardaDev\Kavenegar\Validation\Rules\IranianMobileNumber;
 use FardaDev\Kavenegar\Validation\Rules\UnixTimestamp;
 use Illuminate\Support\Facades\Validator;
 
-readonly class StatusByReceptorRequest
+final readonly class StatusByReceptorRequest
 {
     public function __construct(
         public string $receptor,

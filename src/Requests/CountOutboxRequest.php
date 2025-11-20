@@ -9,7 +9,7 @@ use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Validation\Rules\UnixTimestamp;
 use Illuminate\Support\Facades\Validator;
 
-readonly class CountOutboxRequest
+final readonly class CountOutboxRequest
 {
     public function __construct(
         public int $startdate,
