@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FardaDev\Kavenegar\Requests;
 
 use FardaDev\Kavenegar\Exceptions\InputValidationException;
+use FardaDev\Kavenegar\Validation\Rules\DateRange;
 use FardaDev\Kavenegar\Validation\Rules\IranianMobileNumber;
 use FardaDev\Kavenegar\Validation\Rules\UnixTimestamp;
 use Illuminate\Support\Facades\Validator;
@@ -35,6 +36,7 @@ final readonly class StatusByReceptorRequest
                     'integer',
                     new UnixTimestamp(allowPast: true, allowFuture: true),
                     'gte:startdate',
+                    new DateRange(maxDays: 1),
                 ],
             ],
             [
@@ -44,12 +46,6 @@ final readonly class StatusByReceptorRequest
 
         if ($validator->fails()) {
             throw new InputValidationException($validator->errors());
-        }
-
-        if ($this->enddate !== null && ($this->enddate - $this->startdate) > 86400) {
-            throw new InputValidationException(
-                new \Illuminate\Support\MessageBag(['enddate' => ['بازه زمانی نمی‌تواند بیشتر از یک روز باشد']])
-            );
         }
     }
 

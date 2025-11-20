@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace FardaDev\Kavenegar\Requests;
 
 use FardaDev\Kavenegar\Exceptions\InputValidationException;
+use FardaDev\Kavenegar\Validation\Rules\DateRange;
 use FardaDev\Kavenegar\Validation\Rules\KavenegarSenderLine;
 use FardaDev\Kavenegar\Validation\Rules\UnixTimestamp;
 use Illuminate\Support\Facades\Validator;
@@ -34,6 +35,7 @@ final readonly class SelectOutboxRequest
                     'integer',
                     new UnixTimestamp(allowPast: true, allowFuture: true),
                     'gte:startdate',
+                    new DateRange(maxDays: 1),
                 ],
                 'sender' => ['nullable', 'string', new KavenegarSenderLine()],
             ],
@@ -44,12 +46,6 @@ final readonly class SelectOutboxRequest
 
         if ($validator->fails()) {
             throw new InputValidationException($validator->errors());
-        }
-
-        if ($this->enddate !== null && ($this->enddate - $this->startdate) > 86400) {
-            throw new InputValidationException(
-                new \Illuminate\Support\MessageBag(['enddate' => ['بازه زمانی نمی‌تواند بیشتر از یک روز باشد']])
-            );
         }
     }
 
