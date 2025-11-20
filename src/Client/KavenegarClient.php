@@ -11,7 +11,7 @@ use FardaDev\Kavenegar\Dto\StatusResponse;
 use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
-use FardaDev\Kavenegar\Exceptions\InputValidationException;
+use FardaDev\Kavenegar\Exceptions\KavenegarValidationException;
 use FardaDev\Kavenegar\Requests\CancelRequest;
 use FardaDev\Kavenegar\Requests\CountOutboxRequest;
 use FardaDev\Kavenegar\Requests\LatestOutboxRequest;
@@ -127,27 +127,6 @@ class KavenegarClient
     }
 
     /**
-     * Validate that all arrays have the same length.
-     *
-     * @param  array<int, mixed>  ...$arrays
-     *
-     * @throws KavenegarValidationException
-     */
-    private function validateArrayLengths(array ...$arrays): void
-    {
-        $lengths = array_map('count', $arrays);
-        $uniqueLengths = array_unique($lengths);
-
-        if (count($uniqueLengths) > 1) {
-            throw new KavenegarValidationException(
-                message: 'All arrays must have the same length',
-                errorCode: 419,
-                context: ['lengths' => $lengths]
-            );
-        }
-    }
-
-    /**
      * Convert array or string to comma-separated string.
      *
      * @param  string|array<int, string|int>  $value
@@ -162,39 +141,11 @@ class KavenegarClient
     }
 
     /**
-     * Validate tag format.
-     *
-     * @throws KavenegarValidationException
-     */
-    private function validateTag(?string $tag): void
-    {
-        if ($tag === null) {
-            return;
-        }
-
-        if (strlen($tag) > 200) {
-            throw new KavenegarValidationException(
-                message: 'Tag must not exceed 200 characters',
-                errorCode: 607,
-                context: ['tag' => $tag, 'length' => strlen($tag)]
-            );
-        }
-
-        if (! preg_match('/^[a-zA-Z0-9_-]+$/', $tag)) {
-            throw new KavenegarValidationException(
-                message: 'Tag must contain only alphanumeric characters, hyphens, and underscores',
-                errorCode: 607,
-                context: ['tag' => $tag]
-            );
-        }
-    }
-
-    /**
      * Send SMS to one or more recipients.
      *
      * @return Collection<int, MessageResponse>
      *
-     * @throws InputValidationException
+     * @throws KavenegarValidationException
      * @throws KavenegarApiException
      * @throws KavenegarHttpException
      */
