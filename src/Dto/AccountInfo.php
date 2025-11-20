@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Validator;
 
 readonly class AccountInfo
 {
-    public function __construct(
+    private function __construct(
         public int $remaincredit,
         public int $expiredate,
         public string $type

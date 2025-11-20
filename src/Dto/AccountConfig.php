@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Validator;
 
 readonly class AccountConfig
 {
-    public function __construct(
+    private function __construct(
         public ApiLogsStateEnum $apilogs,
         public ConfigStateEnum $dailyreport,
         public ConfigStateEnum $debugmode,

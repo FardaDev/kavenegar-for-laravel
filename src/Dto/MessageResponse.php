@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Validator;
 
 readonly class MessageResponse
 {
-    public function __construct(
+    private function __construct(
         public int $messageid,
         public string $message,
         public MessageStatusEnum $status,
