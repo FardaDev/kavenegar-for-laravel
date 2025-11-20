@@ -47,14 +47,14 @@ final readonly class SendArrayRequest
             'tag' => $this->tag,
         ], [
             'senders' => ['required', 'array', 'min:1', 'max:200'],
-            'senders.*' => ['required', 'string', new KavenegarSenderLine],
+            'senders.*' => ['required', 'string', new KavenegarSenderLine()],
             'receptors' => ['required', 'array', 'min:1', 'max:200'],
-            'receptors.*' => ['required', 'string', new IranianMobileNumber],
+            'receptors.*' => ['required', 'string', new IranianMobileNumber()],
             'messages' => ['required', 'array', 'min:1', 'max:200'],
             'messages.*' => ['required', 'string', 'max:900'],
             'date' => ['nullable', 'integer', new UnixTimestamp(allowPast: false)],
             'hide' => ['nullable', 'integer', 'in:0,1'],
-            'tag' => ['nullable', 'string', new KavenegarTag],
+            'tag' => ['nullable', 'string', new KavenegarTag()],
         ]);
 
         if ($validator->fails()) {

@@ -44,10 +44,10 @@ final readonly class SendMessageRequest
         ], [
             'receptor' => ['required'],
             'message' => ['required', 'string', 'max:900'],
-            'sender' => ['nullable', 'string', new KavenegarSenderLine],
+            'sender' => ['nullable', 'string', new KavenegarSenderLine()],
             'date' => ['nullable', 'integer', new UnixTimestamp(allowPast: false)],
             'hide' => ['nullable', 'integer', 'in:0,1'],
-            'tag' => ['nullable', 'string', new KavenegarTag],
+            'tag' => ['nullable', 'string', new KavenegarTag()],
         ]);
 
         if ($validator->fails()) {
