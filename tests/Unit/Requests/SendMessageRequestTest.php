@@ -151,7 +151,7 @@ describe('SendMessageRequest', function () {
             expect(false)->toBeTrue('Should have thrown exception');
         } catch (InputValidationException $e) {
             expect($e->getErrors())->toBeInstanceOf(\Illuminate\Support\MessageBag::class)
-                ->and($e->getErrors()->has('receptor'))->toBeTrue();
+                ->and($e->getErrors()->has('receptor.0'))->toBeTrue();
         }
     });
 });

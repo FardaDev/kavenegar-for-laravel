@@ -8,6 +8,7 @@ use FardaDev\Kavenegar\Dto\AccountConfig;
 use FardaDev\Kavenegar\Dto\AccountInfo;
 use FardaDev\Kavenegar\Dto\MessageResponse;
 use FardaDev\Kavenegar\Dto\StatusResponse;
+use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
 use FardaDev\Kavenegar\Exceptions\InputValidationException;
@@ -96,7 +97,7 @@ class KavenegarClient
         if (! isset($data['return']['status'])) {
             throw new KavenegarApiException(
                 message: 'Invalid API response format',
-                errorCode: 0,
+                errorCode: ApiErrorCodeEnum::OPERATION_FAILED->value,
                 context: ['response' => $data]
             );
         }
@@ -105,10 +106,20 @@ class KavenegarClient
 
         if ($status !== 200) {
             $message = $data['return']['message'] ?? 'Unknown error';
+            
+            try {
+                $errorCodeEnum = ApiErrorCodeEnum::from($status);
+                $errorCode = $errorCodeEnum->value;
+            } catch (\ValueError $e) {
+                $validCodes = array_map(fn ($case) => $case->value, ApiErrorCodeEnum::cases());
+                $errorCode = ApiErrorCodeEnum::OPERATION_FAILED->value;
+                $message .= " (Unknown error code: {$status})";
+            }
+            
             throw new KavenegarApiException(
                 message: $message,
-                errorCode: $status,
-                context: ['response' => $data]
+                errorCode: $errorCode,
+                context: ['response' => $data, 'original_status' => $status]
             );
         }
 

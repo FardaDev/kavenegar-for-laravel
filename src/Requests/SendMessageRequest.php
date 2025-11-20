@@ -6,6 +6,7 @@ namespace FardaDev\Kavenegar\Requests;
 
 use FardaDev\Kavenegar\Enums\MessageTypeEnum;
 use FardaDev\Kavenegar\Exceptions\InputValidationException;
+use FardaDev\Kavenegar\Validation\Rules\IranianMobileNumber;
 use FardaDev\Kavenegar\Validation\Rules\KavenegarSenderLine;
 use FardaDev\Kavenegar\Validation\Rules\KavenegarTag;
 use FardaDev\Kavenegar\Validation\Rules\UnixTimestamp;
@@ -33,16 +34,18 @@ final readonly class SendMessageRequest
 
     private function validate(): void
     {
-        // Use Laravel Validator for cleaner validation
+        $receptors = is_array($this->receptor) ? $this->receptor : explode(',', $this->receptor);
+
         $validator = Validator::make([
-            'receptor' => $this->receptor,
+            'receptor' => $receptors,
             'message' => $this->message,
             'sender' => $this->sender,
             'date' => $this->date,
             'hide' => $this->hide,
             'tag' => $this->tag,
         ], [
-            'receptor' => ['required'],
+            'receptor' => ['required', 'array', 'max:200'],
+            'receptor.*' => ['required', 'string', new IranianMobileNumber()],
             'message' => ['required', 'string', 'max:900'],
             'sender' => ['nullable', 'string', new KavenegarSenderLine()],
             'date' => ['nullable', 'integer', new UnixTimestamp(allowPast: false)],
@@ -52,29 +55,6 @@ final readonly class SendMessageRequest
 
         if ($validator->fails()) {
             throw new InputValidationException($validator->errors());
-        }
-
-        // Custom validation for receptors (count and format)
-        $this->validateReceptors();
-    }
-
-    private function validateReceptors(): void
-    {
-        $receptors = is_array($this->receptor) ? $this->receptor : explode(',', $this->receptor);
-
-        if (count($receptors) > 200) {
-            throw new InputValidationException(
-                new \Illuminate\Support\MessageBag(['receptor' => ['تعداد گیرندگان نباید بیشتر از 200 باشد']])
-            );
-        }
-
-        foreach ($receptors as $receptor) {
-            $receptor = trim($receptor);
-            if (! preg_match('/^09\d{9}$/', $receptor)) {
-                throw new InputValidationException(
-                    new \Illuminate\Support\MessageBag(['receptor' => ["شماره موبایل {$receptor} نامعتبر است"]])
-                );
-            }
         }
     }
 
