@@ -29,7 +29,7 @@ final readonly class StatusByReceptorRequest
                 'enddate' => $this->enddate,
             ],
             [
-                'receptor' => ['required', 'string', new IranianMobileNumber()],
+                'receptor' => ['required', 'string', new IranianMobileNumber],
                 'startdate' => ['required', 'integer', new UnixTimestamp(allowPast: true, allowFuture: true)],
                 'enddate' => [
                     'nullable',

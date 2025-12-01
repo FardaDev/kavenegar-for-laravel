@@ -7,9 +7,9 @@ use FardaDev\Kavenegar\Dto\AccountConfig;
 use FardaDev\Kavenegar\Dto\AccountInfo;
 use FardaDev\Kavenegar\Dto\MessageResponse;
 use FardaDev\Kavenegar\Dto\StatusResponse;
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
-use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Facades\Kavenegar;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
 use FardaDev\Kavenegar\Requests\SendMessageRequest;
@@ -40,7 +40,7 @@ describe('Send SMS', function () {
             receptor: '09123456789',
             message: 'Test message'
         );
-        
+
         $result = Kavenegar::send($request);
 
         expect($result)->toBeInstanceOf(Collection::class)
@@ -84,7 +84,7 @@ describe('Send SMS', function () {
             receptor: ['09123456789', '09987654321'],
             message: 'Test'
         );
-        
+
         $result = Kavenegar::send($request);
 
         expect($result)->toHaveCount(2);
@@ -118,7 +118,7 @@ describe('Send SMS', function () {
             tag: 'test-tag',
             policy: 'high-priority'
         );
-        
+
         $result = Kavenegar::send($request);
 
         expect($result[0]->status->value)->toBe(2);
@@ -162,7 +162,7 @@ describe('Send SMS', function () {
             receptor: '09123456789',
             message: 'Test'
         );
-        
+
         expect(fn () => Kavenegar::send($request))
             ->toThrow(KavenegarApiException::class)
             ->and(fn () => Kavenegar::send($request))
@@ -205,7 +205,7 @@ describe('Send Array', function () {
             receptors: ['09123456789', '09987654321'],
             messages: ['Message 1', 'Message 2']
         );
-        
+
         $result = Kavenegar::sendArray($request);
 
         expect($result)->toHaveCount(2)
@@ -308,7 +308,7 @@ describe('Verify Lookup', function () {
             template: 'login-verify',
             token: '123456'
         );
-        
+
         $result = Kavenegar::verifyLookup($request);
 
         expect($result)->toBeInstanceOf(MessageResponse::class)
@@ -345,7 +345,7 @@ describe('Verify Lookup', function () {
             token2: 'user@example.com',
             token3: 'extra-data'
         );
-        
+
         $result = Kavenegar::verifyLookup($request);
 
         expect($result)->toBeInstanceOf(MessageResponse::class);
@@ -416,7 +416,7 @@ describe('Error Handling', function () {
             receptor: '09123456789',
             message: 'Test'
         );
-        
+
         expect(fn () => Kavenegar::send($request))
             ->toThrow(KavenegarApiException::class)
             ->and(fn () => Kavenegar::send($request))
@@ -432,7 +432,7 @@ describe('Error Handling', function () {
             receptor: '09123456789',
             message: 'Test'
         );
-        
+
         expect(fn () => Kavenegar::send($request))
             ->toThrow(KavenegarHttpException::class, 'Failed to connect to Kavenegar API');
     });
@@ -446,7 +446,7 @@ describe('Error Handling', function () {
             receptor: '09123456789',
             message: 'Test'
         );
-        
+
         expect(fn () => Kavenegar::send($request))
             ->toThrow(KavenegarHttpException::class);
     });
@@ -463,7 +463,7 @@ describe('Error Handling', function () {
             receptor: '09123456789',
             message: 'Test'
         );
-        
+
         expect(fn () => Kavenegar::send($request))
             ->toThrow(function (KavenegarApiException $e) {
                 expect($e->getContext())->toBeArray()
@@ -496,7 +496,7 @@ describe('Facade vs Direct Usage', function () {
             receptor: '09123456789',
             message: 'Test'
         );
-        
+
         $result = Kavenegar::send($request);
 
         expect($result)->toBeInstanceOf(Collection::class)->toHaveCount(1);
@@ -524,10 +524,9 @@ describe('Facade vs Direct Usage', function () {
             receptor: '09123456789',
             message: 'Test'
         );
-        
+
         $result = $client->send($request);
 
         expect($result)->toBeInstanceOf(Collection::class)->toHaveCount(1);
     });
 });
-

@@ -4,6 +4,4 @@ declare(strict_types=1);
 
 namespace FardaDev\Kavenegar\Requests;
 
-final readonly class CancelRequest extends MessageIdRequest
-{
-}
+final readonly class CancelRequest extends MessageIdRequest {}

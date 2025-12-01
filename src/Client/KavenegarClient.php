@@ -106,7 +106,7 @@ class KavenegarClient
 
         if ($status !== 200) {
             $message = $data['return']['message'] ?? 'Unknown error';
-            
+
             try {
                 $errorCodeEnum = ApiErrorCodeEnum::from($status);
                 $errorCode = $errorCodeEnum->value;
@@ -115,7 +115,7 @@ class KavenegarClient
                 $errorCode = ApiErrorCodeEnum::OPERATION_FAILED->value;
                 $message .= " (Unknown error code: {$status})";
             }
-            
+
             throw new KavenegarApiException(
                 message: $message,
                 errorCode: $errorCode,

@@ -37,7 +37,7 @@ final readonly class SelectOutboxRequest
                     'gte:startdate',
                     new DateRange(maxDays: 1),
                 ],
-                'sender' => ['nullable', 'string', new KavenegarSenderLine()],
+                'sender' => ['nullable', 'string', new KavenegarSenderLine],
             ],
             [
                 'enddate.gte' => 'تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد',

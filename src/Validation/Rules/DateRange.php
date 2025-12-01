@@ -8,7 +8,7 @@ use Closure;
 use Illuminate\Contracts\Validation\DataAwareRule;
 use Illuminate\Contracts\Validation\ValidationRule;
 
-final class DateRange implements ValidationRule, DataAwareRule
+final class DateRange implements DataAwareRule, ValidationRule
 {
     /**
      * @var array<string, mixed>

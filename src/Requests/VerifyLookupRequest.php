@@ -39,13 +39,13 @@ final readonly class VerifyLookupRequest
             'token10' => $this->token10,
             'token20' => $this->token20,
         ], [
-            'receptor' => ['required', 'string', new IranianMobileNumber()],
+            'receptor' => ['required', 'string', new IranianMobileNumber],
             'template' => ['required', 'string', 'max:100'],
-            'token' => ['required', 'string', new VerifyToken()],
-            'token2' => ['nullable', 'string', new VerifyToken()],
-            'token3' => ['nullable', 'string', new VerifyToken()],
-            'token10' => ['nullable', 'string', new VerifyToken10()],
-            'token20' => ['nullable', 'string', new VerifyToken20()],
+            'token' => ['required', 'string', new VerifyToken],
+            'token2' => ['nullable', 'string', new VerifyToken],
+            'token3' => ['nullable', 'string', new VerifyToken],
+            'token10' => ['nullable', 'string', new VerifyToken10],
+            'token20' => ['nullable', 'string', new VerifyToken20],
         ]);
 
         if ($validator->fails()) {

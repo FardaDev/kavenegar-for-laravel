@@ -48,4 +48,3 @@ class InputValidationException extends Exception
         return $this->errors->toArray();
     }
 }
-

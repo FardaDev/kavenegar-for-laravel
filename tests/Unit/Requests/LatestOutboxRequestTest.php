@@ -79,4 +79,3 @@ describe('LatestOutboxRequest', function () {
         expect($params['pagesize'])->toBe(500);
     });
 });
-

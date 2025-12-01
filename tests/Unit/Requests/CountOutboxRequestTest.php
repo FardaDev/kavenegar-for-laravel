@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 use FardaDev\Kavenegar\Enums\MessageStatusEnum;
 use FardaDev\Kavenegar\Exceptions\InputValidationException;
@@ -99,4 +101,3 @@ it('accepts different message status enums', function () {
             ->and($request->toApiParams()['status'])->toBe($status->value);
     }
 });
-

@@ -2,7 +2,6 @@
 
 declare(strict_types=1);
 
-use FardaDev\Kavenegar\Enums\ApiErrorCodeEnum;
 use FardaDev\Kavenegar\Enums\MessageTypeEnum;
 use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Requests\SendArrayRequest;
@@ -189,4 +188,3 @@ describe('SendArrayRequest', function () {
         expect($params)->not->toHaveKey('localmessageids');
     });
 });
-

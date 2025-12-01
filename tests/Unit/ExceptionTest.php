@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
+use FardaDev\Kavenegar\Exceptions\InputValidationException;
 use FardaDev\Kavenegar\Exceptions\KavenegarApiException;
 use FardaDev\Kavenegar\Exceptions\KavenegarException;
 use FardaDev\Kavenegar\Exceptions\KavenegarHttpException;
-use FardaDev\Kavenegar\Exceptions\InputValidationException;
 
 it('creates api exception with error code and context', function () {
     $exception = new KavenegarApiException(
@@ -38,9 +38,9 @@ it('creates http exception for network errors', function () {
 it('creates validation exception for input errors', function () {
     $errors = new \Illuminate\Support\MessageBag([
         'arrays' => ['Array length mismatch'],
-        'lengths' => ['Lengths do not match']
+        'lengths' => ['Lengths do not match'],
     ]);
-    
+
     $exception = new InputValidationException($errors);
 
     expect($exception)
@@ -49,7 +49,7 @@ it('creates validation exception for input errors', function () {
         ->and($exception->getErrors())->toBe($errors)
         ->and($exception->getErrorsArray())->toBe([
             'arrays' => ['Array length mismatch'],
-            'lengths' => ['Lengths do not match']
+            'lengths' => ['Lengths do not match'],
         ]);
 });
 
@@ -72,4 +72,3 @@ it('preserves previous exception', function () {
 
     expect($exception->getPrevious())->toBe($previous);
 });
-

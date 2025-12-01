@@ -61,7 +61,7 @@ describe('Client Validation', function () {
                 message: 'test',
                 tag: $tag
             );
-            
+
             expect(fn () => $client->send($request))->not->toThrow(InputValidationException::class);
         }
     });
@@ -129,7 +129,7 @@ describe('Client Validation', function () {
             receptors: ['09123456789', '09987654321'],
             messages: ['test1', 'test2']
         );
-        
+
         $result = $client->sendArray($request);
 
         expect($result)->toHaveCount(2);
@@ -190,7 +190,7 @@ describe('Client Helper Methods', function () {
             receptor: ['09123456789', '09987654321'],
             message: 'test'
         );
-        
+
         $result = $client->send($request);
 
         expect($result)->toHaveCount(2);
@@ -226,10 +226,9 @@ describe('Client Helper Methods', function () {
             receptor: '09123456789',
             message: 'test'
         );
-        
+
         $result = $client->send($request);
 
         expect($result)->toHaveCount(1);
     });
 });
-
